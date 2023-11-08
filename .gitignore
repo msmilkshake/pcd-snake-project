@@ -1,0 +1,15 @@
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+
+# Temporary files
+*.tmp
+*.log
+
+# Other folders
+target/
+out/
+
+# Version control
+vcs.xml
