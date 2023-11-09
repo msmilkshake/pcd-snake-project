@@ -16,11 +16,11 @@ public class Goal extends GameElement {
     }
 
     public void incrementValue() throws InterruptedException {
-        //TODO
+        ++value;
     }
 
     public int captureGoal() {
         //		TODO
-        return -1;
+        return value;
     }
 }

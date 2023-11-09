@@ -19,13 +19,12 @@ public class Cell {
     private Snake ocuppyingSnake = null;
     private GameElement gameElement = null;
     private Lock lock = new ReentrantLock();
-    private Condition positionAvailable = lock.newCondition();
+    private Condition cellNotAvailable = lock.newCondition();
 
     public GameElement getGameElement() {
         return gameElement;
     }
-
-
+    
     public Cell(BoardPosition position) {
         super();
         this.position = position;
@@ -35,25 +34,34 @@ public class Cell {
         return position;
     }
 
-    public synchronized void request(Snake snake)
-            throws InterruptedException {
+    public void request(Snake snake) throws InterruptedException {
         //TODO coordination and mutual exclusion
-        while(gameElement!=null || ocuppyingSnake != null){
-            wait();
+        lock.lock();
+        try {
+            while (gameElement != null && !(gameElement instanceof Goal) || ocuppyingSnake != null) {
+                snake.setStuck();
+                cellNotAvailable.await();
+            }
+            ocuppyingSnake = snake;
+        } finally {
+            lock.unlock();
         }
-        ocuppyingSnake = snake;
     }
 
     public synchronized void release() {
-        ocuppyingSnake = null;
-        gameElement = null;
+        lock.lock();
+        try {
+            ocuppyingSnake = null;
+            gameElement = null;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public boolean isOccupiedBySnake() {
         return ocuppyingSnake != null;
     }
-
-
+    
     public void setGameElement(GameElement element) {
         // TODO coordination and mutual exclusion
         gameElement = element;
@@ -63,13 +71,11 @@ public class Cell {
     public boolean isOccupied() {
         return isOccupiedBySnake() || (gameElement != null && gameElement instanceof Obstacle);
     }
-
-
+    
     public Snake getOcuppyingSnake() {
         return ocuppyingSnake;
     }
-
-
+    
     public Goal removeGoal() {
         // TODO
         return null;
@@ -88,6 +94,5 @@ public class Cell {
     public boolean isOccupiedByGoal() {
         return (gameElement != null && gameElement instanceof Goal);
     }
-
-
+    
 }

@@ -11,21 +11,23 @@ import game.Snake;
  */
 public class LocalBoard extends Board {
 
-    private static final int NUM_SNAKES = 10;
+    private static final int NUM_SNAKES = 2;
     private static final int NUM_OBSTACLES = 25;
     private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 3;
 
-
     public LocalBoard() {
-
+        
+        Goal goal = addGoal();
+        
         for (int i = 0; i < NUM_SNAKES; i++) {
-            AutomaticSnake snake = new AutomaticSnake(i, this);
+            AutomaticSnake snake = new AutomaticSnake(i, this, goal);
             snakes.add(snake);
         }
 
         addObstacles(NUM_OBSTACLES);
 
-        Goal goal = addGoal();
+        
+        
         //		System.err.println("All elements placed");
     }
 
@@ -35,7 +37,8 @@ public class LocalBoard extends Board {
         // TODO: launch other threads
         setChanged();
     }
-
+    
+    
 
     @Override
     public void handleKeyPress(int keyCode) {

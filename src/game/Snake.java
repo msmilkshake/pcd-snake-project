@@ -18,8 +18,10 @@ public abstract class Snake extends Thread implements Serializable{
 	
 	protected LinkedList<Cell> cells = new LinkedList<>();
 	protected int size = 5;
+	protected boolean isStuck = false;
 	private int id;
 	private Board board;
+	
 	
 	public Snake(int id,Board board) {
 		this.id = id;
@@ -79,5 +81,8 @@ public abstract class Snake extends Thread implements Serializable{
 	public Board getBoard() {
 		return board;
 	}
-	
+
+	public void setStuck() {
+		isStuck = true;
+	}
 }

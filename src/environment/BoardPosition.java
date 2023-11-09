@@ -1,5 +1,9 @@
 package environment;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Classe representing a position on the board, with some utilities
  *
@@ -48,4 +52,19 @@ public class BoardPosition {
     public BoardPosition getCellRight() {
         return new BoardPosition(x + 1, y);
     }
+    
+    public BoardPosition getRandomNeighbor() {
+        switch (ThreadLocalRandom.current().nextInt(4)) {
+            case 0:
+                return getCellAbove();
+            case 1:
+                return getCellRight();
+            case 2:
+                return getCellBelow();
+            default:
+                return getCellLeft();
+        }
+    }
+    
+    
 }

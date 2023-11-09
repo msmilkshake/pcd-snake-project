@@ -102,6 +102,10 @@ public abstract class Board extends Observable {
         return snakes;
     }
 
+    public void relocateGoal() {
+        setGoalPosition(getRandomPosition());
+    }
+
     @Override
     public void setChanged() {
         super.setChanged();
@@ -122,6 +126,7 @@ public abstract class Board extends Observable {
     public void addSnake(Snake snake) {
         snakes.add(snake);
     }
+    
 
 
 }
