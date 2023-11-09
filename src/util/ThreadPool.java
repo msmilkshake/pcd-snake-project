@@ -24,17 +24,20 @@ public class ThreadPool {
                 public void run() {
                     try {
                         while (true) {
+                            if (isShutdown && tasks.isEmpty()) {
+                                break;
+                            }
                             Runnable task = tasks.take();
                             task.run();
                         }
                     } catch (InterruptedException e) {
                         throw new RuntimeException("Worker interrupted.");
                     }
+                    System.out.println("Worker stopped.");
                 }
             });
             workers.add(worker);
             worker.start();
-
         }
     }
 
@@ -51,6 +54,7 @@ public class ThreadPool {
 
     public void shutdownNow() {
         shutdown();
+        tasks.clear();
         for (Thread worker : workers) {
             worker.interrupt();
         }

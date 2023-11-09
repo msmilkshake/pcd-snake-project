@@ -40,6 +40,10 @@ public class BlockingQueue<E> {
         notifyAll();
     }
 
+    public synchronized boolean isEmpty() {
+        return queue.isEmpty();
+    }
+
     @Override
     public synchronized String toString() {
         return queue.toString();
