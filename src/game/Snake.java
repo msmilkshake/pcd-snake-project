@@ -15,7 +15,7 @@ import environment.Cell;
  *
  */
 public abstract class Snake extends Thread implements Serializable{
-	private static final int DELTA_SIZE = 10;
+	
 	protected LinkedList<Cell> cells = new LinkedList<>();
 	protected int size = 5;
 	private int id;
@@ -42,11 +42,17 @@ public abstract class Snake extends Thread implements Serializable{
 		return cells;
 	}
 	protected void move(Cell cell) throws InterruptedException {
-		// TODO
+		cell.request(this);
+		cells.addFirst(cell);
+		if (cells.size() >= size) {
+			BoardPosition lastAt  = cells.removeLast().getPosition();
+			board.getCell(lastAt).release();
+		}
+		board.setChanged();
 	}
 	
 	public LinkedList<BoardPosition> getPath() {
-		LinkedList<BoardPosition> coordinates = new LinkedList<BoardPosition>();
+		LinkedList<BoardPosition> coordinates = new LinkedList<>();
 		for (Cell cell : cells) {
 			coordinates.add(cell.getPosition());
 		}
@@ -73,6 +79,5 @@ public abstract class Snake extends Thread implements Serializable{
 	public Board getBoard() {
 		return board;
 	}
-	
 	
 }

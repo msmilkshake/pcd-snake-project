@@ -19,9 +19,7 @@ public class BlockingQueue<E> {
             wait();
         }
         queue.add(element);
-        if (capacity > 0) {
-            notifyAll();
-        }
+        notifyAll();
     }
 
     public synchronized E take() throws InterruptedException {
@@ -40,5 +38,10 @@ public class BlockingQueue<E> {
     public synchronized void clear() {
         queue.clear();
         notifyAll();
+    }
+
+    @Override
+    public synchronized String toString() {
+        return queue.toString();
     }
 }

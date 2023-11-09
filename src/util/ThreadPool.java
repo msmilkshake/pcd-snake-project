@@ -5,12 +5,12 @@ import java.util.List;
 
 public class ThreadPool {
     private final int NUM_WORKERS;
-    
-    private BlockingQueue<Runnable> tasks;
+
+    private BlockingQueue<Runnable> tasks = new BlockingQueue<>();
     private List<Thread> workers;
-    
-    private boolean isAlive = true;
-    
+
+    private boolean isShutdown = false;
+
     public ThreadPool(int numWorkers) {
         NUM_WORKERS = numWorkers;
         workers = new ArrayList<>(numWorkers);
@@ -19,7 +19,7 @@ public class ThreadPool {
 
     private void initWorkers() {
         for (int i = 0; i < NUM_WORKERS; ++i) {
-            Thread t = new Thread(new Runnable() {
+            Thread worker = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -28,31 +28,31 @@ public class ThreadPool {
                             task.run();
                         }
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("Worker interrupted.");
                     }
                 }
             });
-            t.start();
-            workers.add(t);
-            
+            workers.add(worker);
+            worker.start();
+
         }
     }
-    
-    public void submit(Thread t) throws InterruptedException {
-        if (!isAlive) {
-            throw new InterruptedException("Thread was ordered to shutdown.");
+
+    public void submit(Runnable t) throws InterruptedException {
+        if (isShutdown) {
+            throw new InterruptedException("ThreadPool was ordered to shutdown.");
         }
         tasks.put(t);
     }
-    
+
     public void shutdown() {
-        isAlive = false;
+        isShutdown = true;
     }
-    
+
     public void shutdownNow() {
         shutdown();
-        for (Thread w : workers) {
-            w.interrupt();
+        for (Thread worker : workers) {
+            worker.interrupt();
         }
     }
 }
