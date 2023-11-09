@@ -45,7 +45,7 @@ public class BoardComponent extends JComponent implements KeyListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         final double CELL_WIDTH = getHeight() / (double) SnakeGui.NUM_ROWS;
-        System.err.println("W:" + getWidth() + " H:" + getHeight());
+//        System.err.println("W:" + getWidth() + " H:" + getHeight());
         for (int x = 0; x < LocalBoard.NUM_COLUMNS; x++) {
             for (int y = 0; y < LocalBoard.NUM_ROWS; y++) {
                 Cell cell = board.getCell(new BoardPosition(x, y));
@@ -70,7 +70,7 @@ public class BoardComponent extends JComponent implements KeyListener {
                         g.drawString(goal.getValue() + "", (int) Math.round((cell.getPosition().x + 0.15) * CELL_WIDTH),
                                 (int) Math.round((cell.getPosition().y + 0.9) * CELL_WIDTH));
                     }
-                if (cell.isOcupiedBySnake()) {
+                if (cell.isOccupiedBySnake()) {
                     // different color for human player...
                     if (cell.getOcuppyingSnake() instanceof HumanSnake)
                         g.setColor(Color.ORANGE);

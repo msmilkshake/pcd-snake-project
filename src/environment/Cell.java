@@ -5,6 +5,10 @@ import game.Goal;
 import game.Obstacle;
 import game.Snake;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Main class for game representation.
  *
@@ -14,6 +18,8 @@ public class Cell {
     private BoardPosition position;
     private Snake ocuppyingSnake = null;
     private GameElement gameElement = null;
+    private Lock lock = new ReentrantLock();
+    private Condition positionAvailable = lock.newCondition();
 
     public GameElement getGameElement() {
         return gameElement;
@@ -29,18 +35,32 @@ public class Cell {
         return position;
     }
 
-    public void request(Snake snake)
+    public synchronized void request(Snake snake)
             throws InterruptedException {
         //TODO coordination and mutual exclusion
+        System.err.println(snake + "    " + this);
+        try{
+            throw new RuntimeException();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        while(gameElement!=null || ocuppyingSnake != null){
+            System.out.println(gameElement + "   " + ocuppyingSnake);
+            wait();
+        }
         ocuppyingSnake = snake;
+        System.err.println("Filled " + this + " with snake " + snake);
+    }
+    public void notifySnakes(){
+        notifyAll();
     }
 
-    public void release() {
+    public synchronized void release() {
         ocuppyingSnake = null;
         gameElement = null;
     }
 
-    public boolean isOcupiedBySnake() {
+    public boolean isOccupiedBySnake() {
         return ocuppyingSnake != null;
     }
 
@@ -51,8 +71,8 @@ public class Cell {
 
     }
 
-    public boolean isOcupied() {
-        return isOcupiedBySnake() || (gameElement != null && gameElement instanceof Obstacle);
+    public boolean isOccupied() {
+        return isOccupiedBySnake() || (gameElement != null && gameElement instanceof Obstacle);
     }
 
 
@@ -76,7 +96,7 @@ public class Cell {
     }
 
 
-    public boolean isOcupiedByGoal() {
+    public boolean isOccupiedByGoal() {
         return (gameElement != null && gameElement instanceof Goal);
     }
 

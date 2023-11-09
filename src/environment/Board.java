@@ -35,6 +35,10 @@ public abstract class Board extends Observable {
         return cells[cellCoord.x][cellCoord.y];
     }
 
+    public Cell[][] getCells() {
+        return cells;
+    }
+
     protected BoardPosition getRandomPosition() {
         return new BoardPosition((int) (Math.random() * NUM_ROWS), (int) (Math.random() * NUM_ROWS));
     }
@@ -51,7 +55,7 @@ public abstract class Board extends Observable {
         boolean placed = false;
         while (!placed) {
             BoardPosition pos = getRandomPosition();
-            if (!getCell(pos).isOcupied() && !getCell(pos).isOcupiedByGoal()) {
+            if (!getCell(pos).isOccupied() && !getCell(pos).isOccupiedByGoal()) {
                 getCell(pos).setGameElement(gameElement);
                 if (gameElement instanceof Goal) {
                     setGoalPosition(pos);

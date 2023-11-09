@@ -1,6 +1,8 @@
 package gui;
 
 import environment.Board;
+import environment.BoardPosition;
+import environment.Cell;
 import environment.LocalBoard;
 
 import javax.swing.*;
@@ -45,7 +47,12 @@ public class SnakeGui implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO
+                //TODO
+                for(Cell[] arr : board.getCells()){
+                    for(Cell c : arr){
+                        c.notifySnakes();
+                    }
+                }
             }
 
         });
