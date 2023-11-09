@@ -38,21 +38,10 @@ public class Cell {
     public synchronized void request(Snake snake)
             throws InterruptedException {
         //TODO coordination and mutual exclusion
-        System.err.println(snake + "    " + this);
-        try{
-            throw new RuntimeException();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         while(gameElement!=null || ocuppyingSnake != null){
-            System.out.println(gameElement + "   " + ocuppyingSnake);
             wait();
         }
         ocuppyingSnake = snake;
-        System.err.println("Filled " + this + " with snake " + snake);
-    }
-    public void notifySnakes(){
-        notifyAll();
     }
 
     public synchronized void release() {

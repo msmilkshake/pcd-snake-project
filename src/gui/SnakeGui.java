@@ -4,6 +4,7 @@ import environment.Board;
 import environment.BoardPosition;
 import environment.Cell;
 import environment.LocalBoard;
+import game.Snake;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,10 +49,8 @@ public class SnakeGui implements Observer {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO
-                for(Cell[] arr : board.getCells()){
-                    for(Cell c : arr){
-                        c.notifySnakes();
-                    }
+                for(Snake s : board.getSnakes()){
+                    s.interrupt();
                 }
             }
 

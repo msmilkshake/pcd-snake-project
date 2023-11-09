@@ -20,26 +20,22 @@ public class AutomaticSnake extends Snake {
     @Override
     public void run() {
         doInitialPositioning();
-//        System.err.println("initial size:" + size);
-//        try {
-//            cells.getLast().request(this);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        //        System.err.println("initial size:" + size);
+        //        try {
+        //            cells.getLast().request(this);
+        //        } catch (InterruptedException e) {
+        //            e.printStackTrace();
+        //        }
 
         //TODO: automatic movement
-        try {
-            while (true) {
+
+        while (true) {
+            try {
                 tryMove();
-                if (Thread.currentThread().isInterrupted()) {
-                    break;
-                }
                 sleep(LocalBoard.PLAYER_PLAY_INTERVAL);
+            } catch (InterruptedException e) {
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
-        System.out.println("Snake " + getIdentification() + " has finished.");
     }
 
     private void tryMove() throws InterruptedException {
