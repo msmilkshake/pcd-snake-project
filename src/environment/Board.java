@@ -127,6 +127,7 @@ public abstract class Board extends Observable {
         snakes.add(snake);
     }
     
-
-
+    public boolean isFinished() {
+        return isFinished;
+    }
 }

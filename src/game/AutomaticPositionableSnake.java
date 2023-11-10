@@ -1,24 +1,41 @@
 package game;
 
-import environment.Board;
-import environment.BoardPosition;
-import environment.Cell;
-import environment.LocalBoard;
+import environment.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AutomaticSnake extends Snake {
+
+// TODO - REMOVE FROM FINAL DELIVERY
+public class AutomaticPositionableSnake extends Snake {
     private Board board;
     private boolean isTrapped = false;
     private BoardPosition lastMove = null;
     private Goal goal;
+    private int initialX;
+    private int initialY;
 
-    public AutomaticSnake(int id, LocalBoard board, Goal goal) {
+    public AutomaticPositionableSnake(int id, TestBoard board, Goal goal, int x, int y) {
         super(id, board);
         this.board = board;
         this.goal = goal;
+        initialX = x;
+        initialY = y;
+    }
+
+    @Override
+    protected void doInitialPositioning() {
+        BoardPosition at = new BoardPosition(initialX, initialY);
+
+        try {
+            board.getCell(at).request(this);
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        cells.add(board.getCell(at));
+        System.err.println("Snake "+getIdentification()+" starting at:"+getCells().getLast());
     }
 
     @Override
@@ -29,15 +46,12 @@ public class AutomaticSnake extends Snake {
 
         while (true) {
             try {
-                if (board.isFinished()) {
-                    break;
-                }
                 tryMove();
                 if (isTrapped) {
                     System.out.println("Snake got stuck.");
                     break;
                 }
-                sleep(LocalBoard.PLAYER_PLAY_INTERVAL);
+                sleep(TestBoard.PLAYER_PLAY_INTERVAL);
             } catch (InterruptedException e) {
             }
         }
