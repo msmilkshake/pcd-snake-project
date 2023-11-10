@@ -12,13 +12,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AutomaticSnake extends Snake {
     private Board board;
     private boolean isTrapped = false;
-    private BoardPosition lastMove = null;
-    private Goal goal;
 
-    public AutomaticSnake(int id, LocalBoard board, Goal goal) {
+    public AutomaticSnake(int id, LocalBoard board) {
         super(id, board);
         this.board = board;
-        this.goal = goal;
     }
 
     @Override
@@ -77,8 +74,7 @@ public class AutomaticSnake extends Snake {
                     }
                 }
             }
-            lastMove = availablePos.get(0);
-            System.out.println("[" + Thread.currentThread().getName() + "] Target:" + target.getPosition());
+            // System.out.println("[" + Thread.currentThread().getName() + "] Target:" + target.getPosition());
             move(target);
         }
 

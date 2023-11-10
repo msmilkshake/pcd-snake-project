@@ -6,7 +6,7 @@ import game.Snake;
 
 public class TestBoard extends Board {
 
-    public static final long PLAYER_PLAY_INTERVAL = 750;
+    public static final long PLAYER_PLAY_INTERVAL = 50;
 
     private static final int NUM_SNAKES = 4;
     private static final int NUM_OBSTACLES = 0;

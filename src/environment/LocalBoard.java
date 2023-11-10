@@ -16,19 +16,12 @@ public class LocalBoard extends Board {
     private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 3;
 
     public LocalBoard() {
-        
-        Goal goal = addGoal();
-        
+        addGoal();
         for (int i = 0; i < NUM_SNAKES; i++) {
-            AutomaticSnake snake = new AutomaticSnake(i, this, goal);
+            AutomaticSnake snake = new AutomaticSnake(i, this);
             snakes.add(snake);
         }
-
         addObstacles(NUM_OBSTACLES);
-
-        
-        
-        //		System.err.println("All elements placed");
     }
 
     public void init() {

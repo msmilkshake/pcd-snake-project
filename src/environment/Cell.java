@@ -22,9 +22,14 @@ public class Cell {
     private Condition cellNotAvailable = lock.newCondition();
 
     public GameElement getGameElement() {
-        return gameElement;
+        lock.lock();
+        try {
+            return gameElement;
+        } finally {
+            lock.unlock();
+        }
     }
-    
+
     public Cell(BoardPosition position) {
         super();
         this.position = position;
@@ -35,7 +40,7 @@ public class Cell {
     }
 
     public void request(Snake snake) throws InterruptedException {
-        //TODO coordination and mutual exclusion
+        // TODO coordination and mutual exclusion
         lock.lock();
         try {
             while (gameElement != null && !(gameElement instanceof Goal) || ocuppyingSnake != null) {
@@ -48,51 +53,94 @@ public class Cell {
         }
     }
 
-    public synchronized void release() {
+    public void release() {
         lock.lock();
         try {
             ocuppyingSnake = null;
             gameElement = null;
+            cellNotAvailable.signalAll();
         } finally {
             lock.unlock();
         }
     }
 
     public boolean isOccupiedBySnake() {
-        return ocuppyingSnake != null;
+        lock.lock();
+        try {
+            return ocuppyingSnake != null;
+        } finally {
+            lock.unlock();
+        }
     }
-    
+
     public void setGameElement(GameElement element) {
         // TODO coordination and mutual exclusion
-        gameElement = element;
-
+        lock.lock();
+        try {
+            gameElement = element;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public boolean isOccupied() {
-        return isOccupiedBySnake() || (gameElement != null && gameElement instanceof Obstacle);
+        lock.lock();
+        try {
+            return isOccupiedBySnake() || (gameElement != null && gameElement instanceof Obstacle);
+        } finally {
+            lock.unlock();
+        }
     }
-    
+
     public Snake getOcuppyingSnake() {
-        return ocuppyingSnake;
+        lock.lock();
+        try {
+            return ocuppyingSnake;
+        } finally {
+            lock.unlock();
+        }
     }
-    
+
     public Goal removeGoal() {
-        // TODO
-        return null;
+        lock.lock();
+        try {
+            Goal goal = getGoal();
+            release();
+            return goal;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void removeObstacle() {
-        //TODO
+        lock.lock();
+        try {
+            if (isOccupied() && gameElement instanceof Obstacle) {
+                gameElement = null;
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
 
     public Goal getGoal() {
-        return (Goal) gameElement;
+        lock.lock();
+        try {
+            return (Goal) gameElement;
+        } finally {
+            lock.unlock();
+        }
     }
 
 
     public boolean isOccupiedByGoal() {
-        return (gameElement != null && gameElement instanceof Goal);
+        lock.lock();
+        try {
+            return (gameElement != null && gameElement instanceof Goal);
+        } finally {
+            lock.unlock();
+        }
     }
-    
+
 }
