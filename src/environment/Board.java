@@ -50,10 +50,10 @@ public abstract class Board extends Observable {
         this.goalPosition = goalPosition;
     }
 
-    public void addGameElement(GameElement gameElement) {
+    public Cell addGameElement(GameElement gameElement) {
         boolean placed = false;
+        BoardPosition pos = getRandomPosition();
         while (!placed) {
-            BoardPosition pos = getRandomPosition();
             if (!getCell(pos).isOccupied() && !getCell(pos).isOccupiedByGoal()) {
                 getCell(pos).setGameElement(gameElement);
                 if (gameElement instanceof Goal) {
@@ -61,8 +61,11 @@ public abstract class Board extends Observable {
                     //					System.out.println("Goal placed at:"+pos);
                 }
                 placed = true;
+            } else {
+                pos = getRandomPosition();
             }
         }
+        return getCell(pos);
     }
 
     public List<BoardPosition> getNeighboringPositions(Cell cell) {
@@ -90,7 +93,7 @@ public abstract class Board extends Observable {
         getObstacles().clear();
         while (numberObstacles > 0) {
             Obstacle obs = new Obstacle(this);
-            addGameElement(obs);
+            obs.setOccupyingCell(addGameElement(obs));
             getObstacles().add(obs);
             numberObstacles--;
         }
@@ -98,10 +101,6 @@ public abstract class Board extends Observable {
 
     public LinkedList<Snake> getSnakes() {
         return snakes;
-    }
-
-    public void relocateGoal() {
-        setGoalPosition(getRandomPosition());
     }
 
     @Override

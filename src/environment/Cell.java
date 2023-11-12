@@ -105,7 +105,7 @@ public class Cell {
         lock.lock();
         try {
             Goal goal = getGoal();
-            release();
+            gameElement = null;
             return goal;
         } finally {
             lock.unlock();
@@ -117,6 +117,7 @@ public class Cell {
         try {
             if (isOccupied() && gameElement instanceof Obstacle) {
                 gameElement = null;
+                cellNotAvailable.signalAll();
             }
         } finally {
             lock.unlock();

@@ -48,14 +48,7 @@ public abstract class Snake extends Thread implements Serializable {
         cell.request(this);
         if (cell.isOccupiedByGoal()) {
             Goal goal = cell.removeGoal();
-            int goalValue = goal.captureGoal();
-            if (goalValue == 9) {
-                board.gameFinished();
-            } else {
-                size += goalValue;
-                goal.incrementValue();
-                board.addGameElement(goal);
-            }
+            size += goal.captureGoal();
         }
         cells.addFirst(cell);
         if (cells.size() > size) {

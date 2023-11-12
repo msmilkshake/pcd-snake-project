@@ -1,8 +1,10 @@
 package environment;
 
 import game.AutomaticSnake;
-import game.Goal;
+import game.Obstacle;
+import game.ObstacleMover;
 import game.Snake;
+import util.ThreadPool;
 
 /**
  * Class representing the state of a game running locally
@@ -14,6 +16,8 @@ public class LocalBoard extends Board {
     private static final int NUM_SNAKES = 2;
     private static final int NUM_OBSTACLES = 25;
     private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 3;
+
+    private ThreadPool threadPool = new ThreadPool(NUM_SIMULTANEOUS_MOVING_OBSTACLES);
 
     public LocalBoard() {
         addGoal();
@@ -27,11 +31,26 @@ public class LocalBoard extends Board {
     public void init() {
         for (Snake s : snakes)
             s.start();
+
         // TODO: launch other threads
+        for (Obstacle obstacle : getObstacles()) {
+            try {
+                ObstacleMover mover = new ObstacleMover(obstacle, this);
+                threadPool.submit(mover);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         setChanged();
     }
     
-    
+    @Override
+    public void gameFinished() {
+        super.gameFinished();
+        threadPool.shutdownNow();
+    }
+
 
     @Override
     public void handleKeyPress(int keyCode) {
