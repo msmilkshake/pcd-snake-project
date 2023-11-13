@@ -2,10 +2,17 @@ package util;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BlockingQueue<E> {
     private Queue<E> queue = new LinkedList<>();
     private int capacity = 0;
+
+    private Lock lock = new ReentrantLock();
+    private Condition notEmpty = lock.newCondition();
+    private Condition notFull = lock.newCondition();
 
     public BlockingQueue() {
     }
@@ -14,38 +21,68 @@ public class BlockingQueue<E> {
         this.capacity = capacity;
     }
 
-    public synchronized void put(E element) throws InterruptedException {
-        while (capacity > 0 && queue.size() >= capacity) {
-            wait();
+    public void put(E element) throws InterruptedException {
+        lock.lock();
+        try {
+            while (capacity > 0 && queue.size() >= capacity) {
+                notFull.await();
+            }
+            queue.add(element);
+            notEmpty.signalAll();
+        } finally {
+            lock.unlock();
         }
-        queue.add(element);
-        notifyAll();
     }
 
-    public synchronized E take() throws InterruptedException {
-        while (queue.isEmpty()) {
-            wait();
+    public E take() throws InterruptedException {
+        lock.lock();
+        try {
+            while (queue.isEmpty()) {
+                notEmpty.await();
+            }
+            E head = queue.poll();
+            notFull.signalAll();
+            return head;
+        } finally {
+            lock.unlock();
         }
-        E head = queue.poll();
-        notifyAll();
-        return head;
     }
 
-    public synchronized int size() {
-        return queue.size();
+    public int size() {
+        lock.lock();
+        try {
+            return queue.size();
+        } finally {
+            lock.unlock();
+        }
     }
 
-    public synchronized void clear() {
-        queue.clear();
-        notifyAll();
+    public void clear() {
+        lock.lock();
+        try {
+            queue.clear();
+            notFull.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 
-    public synchronized boolean isEmpty() {
-        return queue.isEmpty();
+    public boolean isEmpty() {
+        lock.lock();
+        try {
+            return queue.isEmpty();
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
-    public synchronized String toString() {
-        return queue.toString();
+    public String toString() {
+        lock.lock();
+        try {
+            return queue.toString();
+        } finally {
+            lock.unlock();
+        }
     }
 }
