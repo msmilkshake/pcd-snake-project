@@ -29,10 +29,24 @@ public class Cell {
         return position;
     }
 
+<<<<<<< Updated upstream
     public void request(Snake snake)
             throws InterruptedException {
         //TODO coordination and mutual exclusion
         ocuppyingSnake = snake;
+=======
+    public void request(Snake snake) throws InterruptedException {
+        lock.lock();
+        try {
+            while (gameElement != null && !(gameElement instanceof Goal) || ocuppyingSnake != null) {
+                snake.setStuck();
+                cellNotAvailable.await();
+            }
+            ocuppyingSnake = snake;
+        } finally {
+            lock.unlock();
+        }
+>>>>>>> Stashed changes
     }
 
     public void release() {
@@ -45,9 +59,18 @@ public class Cell {
 
 
     public void setGameElement(GameElement element) {
+<<<<<<< Updated upstream
         // TODO coordination and mutual exclusion
         gameElement = element;
 
+=======
+        lock.lock();
+        try {
+            gameElement = element;
+        } finally {
+            lock.unlock();
+        }
+>>>>>>> Stashed changes
     }
 
     public boolean isOcupied() {

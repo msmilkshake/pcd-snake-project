@@ -12,6 +12,7 @@ public class AutomaticSnake extends Snake {
     @Override
     public void run() {
         doInitialPositioning();
+<<<<<<< Updated upstream
         System.err.println("initial size:" + cells.size());
         try {
             cells.getLast().request(this);
@@ -21,6 +22,23 @@ public class AutomaticSnake extends Snake {
         }
         //TODO: automatic movement
 
+=======
+        while (true) {
+            try {
+                if (board.isFinished()) {
+                    break;
+                }
+                tryMove();
+                if (isTrapped) {
+                    System.out.println("Snake got stuck.");
+                    break;
+                }
+                sleep(LocalBoard.PLAYER_PLAY_INTERVAL);
+            } catch (InterruptedException e) {
+            }
+        }
+        System.out.println("Snake terminated.");
+>>>>>>> Stashed changes
     }
 
     private void tryMove() {
