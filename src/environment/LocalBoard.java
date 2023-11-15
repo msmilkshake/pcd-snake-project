@@ -32,30 +32,9 @@ public class LocalBoard extends Board {
     public void init() {
         for (Snake s : snakes)
             s.start();
-<<<<<<< Updated upstream
         // TODO: launch other threads
         setChanged();
     }
-=======
-
-        for (Obstacle obstacle : getObstacles()) {
-            try {
-                ObstacleMover mover = new ObstacleMover(obstacle, this);
-                threadPool.submit(mover);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        setChanged();
-    }
-
-    @Override
-    public void gameFinished() {
-        super.gameFinished();
-        threadPool.shutdownNow();
-    }
->>>>>>> Stashed changes
 
 
     @Override
