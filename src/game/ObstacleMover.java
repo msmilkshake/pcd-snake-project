@@ -14,8 +14,7 @@ public class ObstacleMover extends Thread {
 
     @Override
     public void run() {
-        // TODO
-        while (obstacle.getRemainingMoves() > 0) {
+        while (obstacle.getRemainingMoves() > 0 && !board.isFinished()) {
             try {
                 System.out.println("[" + getName() + "] waiting...");
                 sleep(Obstacle.OBSTACLE_MOVE_INTERVAL);

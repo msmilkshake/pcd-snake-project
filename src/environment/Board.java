@@ -4,6 +4,7 @@ import game.GameElement;
 import game.Goal;
 import game.Obstacle;
 import game.Snake;
+import gui.Main;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -132,5 +133,14 @@ public abstract class Board extends Observable {
     public void gameFinished() {
         isFinished = true;
         interruptSnakes();
+
+        int winnerSnakeID = 0, winnerSnakeSize = 0;
+        for (Snake s : snakes) {
+            if (s.getSize() > winnerSnakeSize) {
+                winnerSnakeID = s.getIdentification();
+                winnerSnakeSize = s.getSize();
+            }
+        }
+        Main.getSnakeGui().endGamePopup(winnerSnakeID);
     }
 }
