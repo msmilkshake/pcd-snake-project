@@ -23,13 +23,11 @@ public class Goal extends GameElement {
 
     public int captureGoal() {
         //		TODO
-
-        if (value == MAX_VALUE) {
-            board.gameFinished();
-        } else {
+        int localVal = value;
+        if (value<MAX_VALUE) {
             incrementValue();
             board.addGameElement(this);
         }
-        return value;
+        return localVal;
     }
 }

@@ -4,7 +4,7 @@ import environment.LocalBoard;
 import environment.TestBoard;
 
 public class Main {
-    private static SnakeGui game;
+    public static SnakeGui game;
     public static void main(String[] args) {
         LocalBoard board = new LocalBoard();
         // TestBoard board = new TestBoard();
@@ -13,9 +13,5 @@ public class Main {
         // Launch server
         // TODO
 
-    }
-
-    public static SnakeGui getSnakeGui() {
-        return game;
     }
 }

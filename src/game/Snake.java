@@ -46,9 +46,12 @@ public abstract class Snake extends Thread implements Serializable {
 
     protected void move(Cell cell) throws InterruptedException {
         cell.request(this);
+        int goalSize=0;
         if (cell.isOccupiedByGoal()) {
             Goal goal = cell.removeGoal();
-            size += goal.captureGoal();
+            goalSize = goal.captureGoal();
+            System.err.println(goalSize);
+            size += goalSize;
         }
         cells.addFirst(cell);
         if (cells.size() > size) {
@@ -56,6 +59,9 @@ public abstract class Snake extends Thread implements Serializable {
             board.getCell(lastAt).release();
         }
         board.setChanged();
+        if (goalSize==Goal.MAX_VALUE){
+            board.gameFinished();
+        }
     }
 
     public LinkedList<BoardPosition> getPath() {

@@ -72,6 +72,7 @@ public class SnakeGui implements Observer {
     }
 
     public void endGamePopup(int winnerSnakeID) {
+
         JOptionPane.showMessageDialog(frame, "Snake " + winnerSnakeID + " won the game!", "Game finished", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
     }
