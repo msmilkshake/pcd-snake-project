@@ -46,7 +46,7 @@ public abstract class Snake extends Thread implements Serializable {
 
     protected void move(Cell cell) throws InterruptedException {
         cell.request(this);
-        int goalSize=0;
+        int goalSize = 0;
         if (cell.isOccupiedByGoal()) {
             Goal goal = cell.removeGoal();
             goalSize = goal.captureGoal();
@@ -59,7 +59,7 @@ public abstract class Snake extends Thread implements Serializable {
             board.getCell(lastAt).release();
         }
         board.setChanged();
-        if (goalSize==Goal.MAX_VALUE){
+        if (goalSize == Goal.MAX_VALUE) {
             board.gameFinished();
         }
     }
@@ -77,16 +77,20 @@ public abstract class Snake extends Thread implements Serializable {
         // Random position on the first column. 
         // At startup, snake occupies a single cell
         int posX = 0;
-        int posY = (int) (Math.random() * Board.NUM_ROWS);
-        BoardPosition at = new BoardPosition(posX, posY);
-
+        boolean placed = false;
         try {
-            board.getCell(at).request(this);
+            while (!placed) {
+                int posY = (int) (Math.random() * Board.NUM_ROWS);
+                BoardPosition at = new BoardPosition(posX, posY);
+                if (!board.getCell(at).isOccupied()) {
+                    board.getCell(at).request(this);
+                    cells.add(board.getCell(at));
+                    placed = true;
+                }
+            }
         } catch (InterruptedException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        cells.add(board.getCell(at));
         System.err.println("Snake " + getIdentification() + " starting at:" + getCells().getLast());
     }
 

@@ -1,28 +1,27 @@
 package environment;
 
-import game.AutomaticSnake;
-import game.Obstacle;
-import game.ObstacleMover;
-import game.Snake;
+import game.*;
 import util.ThreadPool;
+
+import java.util.Collections;
 
 /**
  * Class representing the state of a game running locally
  *
  * @author luismota
  */
-public class LocalBoard extends Board {
+public class StressTestBoard extends Board {
 
-    private static final int NUM_SNAKES = 2;
-    private static final int NUM_OBSTACLES = 150;
-    private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 25;
+    private static final int NUM_SNAKES = 30;
+    private static final int NUM_OBSTACLES = 30;
+    private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 5;
 
     private ThreadPool threadPool = new ThreadPool(NUM_SIMULTANEOUS_MOVING_OBSTACLES);
 
-    public LocalBoard() {
-        addGoal();
+    public StressTestBoard() {
+        // addGoal();
         for (int i = 0; i < NUM_SNAKES; i++) {
-            AutomaticSnake snake = new AutomaticSnake(i, this);
+            MoveRightSnake snake = new MoveRightSnake(i, this, i);
             snakes.add(snake);
         }
         addObstacles(NUM_OBSTACLES);
@@ -35,7 +34,7 @@ public class LocalBoard extends Board {
         // TODO: launch other threads
         for (Obstacle obstacle : getObstacles()) {
             try {
-                ObstacleMover mover = new ObstacleMover(obstacle, this);
+                ObstacleLeftMover mover = new ObstacleLeftMover(obstacle, this);
                 threadPool.submit(mover);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -43,6 +42,20 @@ public class LocalBoard extends Board {
         }
 
         setChanged();
+    }
+
+    @Override
+    protected void addObstacles(int numberObstacles) {
+        // clear obstacle list , necessary when resetting obstacles.
+        getObstacles().clear();
+        for (int i = 0; i < numberObstacles; ++i) {
+            BoardPosition pos = new BoardPosition(15, i);
+            Obstacle obs = new Obstacle(this);
+            obs.setOccupyingCell(getCell(pos));
+            getCell(pos).setGameElement(obs);
+            getObstacles().add(obs);
+        }
+        Collections.shuffle(getObstacles());
     }
     
     @Override

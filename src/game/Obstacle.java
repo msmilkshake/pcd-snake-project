@@ -6,7 +6,7 @@ import environment.Cell;
 public class Obstacle extends GameElement {
 	
 
-    public static final int OBSTACLE_MOVE_INTERVAL = 1000;
+    public static final int OBSTACLE_MOVE_INTERVAL = 250;
     
     private static final int NUM_MOVES = 3;
     private int remainingMoves = NUM_MOVES;
