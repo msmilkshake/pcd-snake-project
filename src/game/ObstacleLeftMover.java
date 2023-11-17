@@ -29,12 +29,12 @@ public class ObstacleLeftMover extends Thread {
 
     private void move() {
         Cell temp = obstacle.getOccupyingCell();
-        temp.removeObstacle();
         BoardPosition pos = temp.getPosition();
         Cell newCell = board.getCell(pos.getCellLeft());
-        if (newCell.isOccupied()) {
-            newCell = board.addGameElement(obstacle);
+        if (newCell.isOccupied() || pos.getCellLeft().x < 0) {
+            newCell = temp;
         } else {
+            temp.removeObstacle();
             newCell.setGameElement(obstacle);
         }
         obstacle.setOccupyingCell(newCell);

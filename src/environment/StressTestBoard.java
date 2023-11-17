@@ -14,7 +14,7 @@ public class StressTestBoard extends Board {
 
     private static final int NUM_SNAKES = 30;
     private static final int NUM_OBSTACLES = 30;
-    private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 5;
+    private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 6;
 
     private ThreadPool threadPool = new ThreadPool(NUM_SIMULTANEOUS_MOVING_OBSTACLES);
 

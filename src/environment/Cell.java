@@ -143,5 +143,16 @@ public class Cell {
             lock.unlock();
         }
     }
+    
+    public void handleObstacleMovement(Obstacle obstacle, Board board) {
+        lock.lock();
+        try {
+            obstacle.getOccupyingCell().removeObstacle();
+            obstacle.setOccupyingCell(board.addGameElement(obstacle));
+            board.setChanged();
+        } finally {
+            lock.unlock();
+        }
+    }
 
 }

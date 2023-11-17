@@ -16,15 +16,9 @@ public class ObstacleMover extends Thread {
     public void run() {
         while (obstacle.getRemainingMoves() > 0 && !board.isFinished()) {
             try {
-                System.out.println("[" + getName() + "] waiting...");
                 sleep(Obstacle.OBSTACLE_MOVE_INTERVAL);
-                System.out.println("[" + getName() + "] will move.");
-                System.out.println("[" + getName() + "] Start remaining moves: " + obstacle.getRemainingMoves());
                 move();
-                System.out.println("[" + getName() + "] moved.");
                 obstacle.decrementRemainingMoves();
-                System.out.println("[" + getName() + "] decremented.");
-                System.out.println("[" + getName() + "] End remaining moves: " + obstacle.getRemainingMoves());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -32,8 +26,6 @@ public class ObstacleMover extends Thread {
     }
 
     private void move() {
-        obstacle.getOccupyingCell().removeObstacle();
-        obstacle.setOccupyingCell(board.addGameElement(obstacle));
-        board.setChanged();
+        obstacle.getOccupyingCell().handleObstacleMovement(obstacle, board);
     }
 }

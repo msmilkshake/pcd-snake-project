@@ -11,6 +11,7 @@ public class MoveRightSnake extends Snake {
         super(id, board);
         this.board = board;
         this.posY = posY;
+        size = 8;
     }
 
     @Override
