@@ -15,11 +15,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author luismota
  */
 public class Cell {
+    
+    private static Lock obstacleLock = new ReentrantLock();
+    
     private BoardPosition position;
     private Snake ocuppyingSnake = null;
     private GameElement gameElement = null;
     private Lock lock = new ReentrantLock();
     private Condition cellNotAvailable = lock.newCondition();
+    
 
     public GameElement getGameElement() {
         lock.lock();
@@ -40,7 +44,7 @@ public class Cell {
     }
 
     public void request(Snake snake) throws InterruptedException {
-        // TODO coordination and mutual exclusion
+        // coordination and mutual exclusion
         lock.lock();
         try {
             while (gameElement != null && !(gameElement instanceof Goal) || ocuppyingSnake != null) {
@@ -74,7 +78,7 @@ public class Cell {
     }
 
     public void setGameElement(GameElement element) {
-        // TODO coordination and mutual exclusion
+        // coordination and mutual exclusion
         lock.lock();
         try {
             gameElement = element;
@@ -145,13 +149,13 @@ public class Cell {
     }
     
     public void handleObstacleMovement(Obstacle obstacle, Board board) {
-        lock.lock();
+        obstacleLock.lock();
         try {
             obstacle.getOccupyingCell().removeObstacle();
             obstacle.setOccupyingCell(board.addGameElement(obstacle));
             board.setChanged();
         } finally {
-            lock.unlock();
+            obstacleLock.unlock();
         }
     }
 

@@ -31,7 +31,7 @@ public class StressTestBoard extends Board {
         for (Snake s : snakes)
             s.start();
 
-        // TODO: launch other threads
+        // launch other threads
         for (Obstacle obstacle : getObstacles()) {
             try {
                 ObstacleLeftMover mover = new ObstacleLeftMover(obstacle, this);

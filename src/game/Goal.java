@@ -22,7 +22,6 @@ public class Goal extends GameElement {
     }
 
     public int captureGoal() {
-        //		TODO
         int localVal = value;
         if (value<MAX_VALUE) {
             incrementValue();

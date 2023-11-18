@@ -59,7 +59,6 @@ public abstract class Board extends Observable {
                 getCell(pos).setGameElement(gameElement);
                 if (gameElement instanceof Goal) {
                     setGoalPosition(pos);
-                    //					System.out.println("Goal placed at:"+pos);
                 }
                 placed = true;
             } else {
@@ -142,5 +141,17 @@ public abstract class Board extends Observable {
             }
         }
         Main.game.endGamePopup(winnerSnakeID);
+    }
+
+    public void countObstacles() {
+        int obstacleCount = 0;
+        for (Cell[] rows : cells) {
+            for (Cell cell : rows) {
+                if (cell.getGameElement() instanceof  Obstacle) {
+                    ++obstacleCount;
+                }
+            }
+        }
+        System.out.println("Obstacle count: " + obstacleCount);
     }
 }

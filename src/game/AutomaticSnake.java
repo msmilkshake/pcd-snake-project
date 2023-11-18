@@ -21,9 +21,8 @@ public class AutomaticSnake extends Snake {
     @Override
     public void run() {
         doInitialPositioning();
-
-        //TODO: automatic movement
-
+        
+        //automatic movement
         while (true) {
             try {
                 if (board.isFinished()) {

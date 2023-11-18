@@ -13,7 +13,7 @@ import util.ThreadPool;
  */
 public class LocalBoard extends Board {
 
-    private static final int NUM_SNAKES = 6;
+    private static final int NUM_SNAKES = 2;
     private static final int NUM_OBSTACLES = 25;
     private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 3;
 
@@ -32,7 +32,7 @@ public class LocalBoard extends Board {
         for (Snake s : snakes)
             s.start();
 
-        // TODO: launch other threads
+        // launch other threads
         for (Obstacle obstacle : getObstacles()) {
             try {
                 ObstacleMover mover = new ObstacleMover(obstacle, this);
@@ -41,10 +41,11 @@ public class LocalBoard extends Board {
                 throw new RuntimeException(e);
             }
         }
+        countObstacles();
 
         setChanged();
     }
-    
+
     @Override
     public void gameFinished() {
         super.gameFinished();

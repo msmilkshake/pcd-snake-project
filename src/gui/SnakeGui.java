@@ -48,13 +48,24 @@ public class SnakeGui implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO
                 board.interruptSnakes();
             }
 
         });
-        frame.add(resetObstaclesButton, BorderLayout.SOUTH);
+        
+        JButton obstacleCountButton = new JButton("Obstacle Count");
+        obstacleCountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.countObstacles();
+            }
+        });
 
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.add(resetObstaclesButton);
+        buttonsPanel.add(obstacleCountButton);
+        
+        frame.add(buttonsPanel, BorderLayout.SOUTH);
 
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,7 +84,9 @@ public class SnakeGui implements Observer {
 
     public void endGamePopup(int winnerSnakeID) {
 
-        JOptionPane.showMessageDialog(frame, "Snake " + winnerSnakeID + " won the game!", "Game finished", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, 
+                "Snake " + winnerSnakeID + " won the game!",
+                "Game finished", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
     }
 }
