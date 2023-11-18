@@ -14,6 +14,17 @@ public class ObstacleMover extends Thread {
 
     @Override
     public void run() {
-        // TODO
+        while (obstacle.getRemainingMoves() > 0 && !board.isFinished()) {
+            try {
+                sleep(Obstacle.OBSTACLE_MOVE_INTERVAL);
+                move();
+                obstacle.decrementRemainingMoves();
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    private void move() {
+        obstacle.getOccupyingCell().handleObstacleMovement(obstacle, board);
     }
 }

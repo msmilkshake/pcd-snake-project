@@ -5,20 +5,34 @@ import game.Goal;
 import game.Obstacle;
 import game.Snake;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Main class for game representation.
  *
  * @author luismota
  */
 public class Cell {
+
+    private static Lock obstacleLock = new ReentrantLock();
+
     private BoardPosition position;
     private Snake ocuppyingSnake = null;
     private GameElement gameElement = null;
+    private Lock lock = new ReentrantLock();
+    private Condition cellNotAvailable = lock.newCondition();
+
 
     public GameElement getGameElement() {
-        return gameElement;
+        lock.lock();
+        try {
+            return gameElement;
+        } finally {
+            lock.unlock();
+        }
     }
-
 
     public Cell(BoardPosition position) {
         super();
@@ -29,55 +43,120 @@ public class Cell {
         return position;
     }
 
-    public void request(Snake snake)
-            throws InterruptedException {
-        //TODO coordination and mutual exclusion
-        ocuppyingSnake = snake;
+    public void request(Snake snake) throws InterruptedException {
+        // coordination and mutual exclusion
+        lock.lock();
+        try {
+            while (gameElement != null && !(gameElement instanceof Goal) || ocuppyingSnake != null) {
+                snake.setStuck();
+                cellNotAvailable.await();
+            }
+            ocuppyingSnake = snake;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void release() {
-        //TODO
+        lock.lock();
+        try {
+            ocuppyingSnake = null;
+            gameElement = null;
+            cellNotAvailable.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 
-    public boolean isOcupiedBySnake() {
-        return ocuppyingSnake != null;
+    public boolean isOccupiedBySnake() {
+        lock.lock();
+        try {
+            return ocuppyingSnake != null;
+        } finally {
+            lock.unlock();
+        }
     }
-
 
     public void setGameElement(GameElement element) {
-        // TODO coordination and mutual exclusion
-        gameElement = element;
-
+        // coordination and mutual exclusion
+        lock.lock();
+        try {
+            gameElement = element;
+        } finally {
+            lock.unlock();
+        }
     }
 
-    public boolean isOcupied() {
-        return isOcupiedBySnake() || (gameElement != null && gameElement instanceof Obstacle);
+    public boolean isOccupied() {
+        lock.lock();
+        try {
+            return isOccupiedBySnake() || (gameElement != null && gameElement instanceof Obstacle);
+        } finally {
+            lock.unlock();
+        }
     }
-
 
     public Snake getOcuppyingSnake() {
-        return ocuppyingSnake;
+        lock.lock();
+        try {
+            return ocuppyingSnake;
+        } finally {
+            lock.unlock();
+        }
     }
 
-
     public Goal removeGoal() {
-        // TODO
-        return null;
+        lock.lock();
+        try {
+            Goal goal = getGoal();
+            gameElement = null;
+            return goal;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void removeObstacle() {
-        //TODO
+        lock.lock();
+        try {
+            if (isOccupied() && gameElement instanceof Obstacle) {
+                gameElement = null;
+                cellNotAvailable.signalAll();
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
 
     public Goal getGoal() {
-        return (Goal) gameElement;
+        lock.lock();
+        try {
+            return (Goal) gameElement;
+        } finally {
+            lock.unlock();
+        }
     }
 
 
-    public boolean isOcupiedByGoal() {
-        return (gameElement != null && gameElement instanceof Goal);
+    public boolean isOccupiedByGoal() {
+        lock.lock();
+        try {
+            return (gameElement != null && gameElement instanceof Goal);
+        } finally {
+            lock.unlock();
+        }
     }
 
+    public void handleObstacleMovement(Obstacle obstacle, Board board) {
+        obstacleLock.lock();
+        try {
+            obstacle.getOccupyingCell().removeObstacle();
+            obstacle.setOccupyingCell(board.addGameElement(obstacle));
+            board.setChanged();
+        } finally {
+            obstacleLock.unlock();
+        }
+    }
 
 }

@@ -1,7 +1,10 @@
 package gui;
 
 import environment.Board;
+import environment.BoardPosition;
+import environment.Cell;
 import environment.LocalBoard;
+import game.Snake;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +20,8 @@ import java.util.Observer;
  * @author luismota
  */
 public class SnakeGui implements Observer {
-    public static final int BOARD_WIDTH = 800;
-    public static final int BOARD_HEIGHT = 800;
+    public static final int BOARD_WIDTH = 700;
+    public static final int BOARD_HEIGHT = 700;
     public static final int NUM_COLUMNS = 40;
     public static final int NUM_ROWS = 30;
     private JFrame frame;
@@ -45,12 +48,25 @@ public class SnakeGui implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO
+                board.interruptSnakes();
             }
 
         });
-        frame.add(resetObstaclesButton, BorderLayout.SOUTH);
+        
+        // For debugging purposes
+        JButton obstacleCountButton = new JButton("Obstacle Count");
+        obstacleCountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.countObstacles();
+            }
+        });
 
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.add(resetObstaclesButton);
+        buttonsPanel.add(obstacleCountButton);
+        
+        frame.add(buttonsPanel, BorderLayout.SOUTH);
 
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,5 +81,13 @@ public class SnakeGui implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         boardGui.repaint();
+    }
+
+    public void endGamePopup(int winnerSnakeID) {
+
+        JOptionPane.showMessageDialog(frame, 
+                "Snake " + winnerSnakeID + " won the game!",
+                "Game finished", JOptionPane.INFORMATION_MESSAGE);
+        // System.exit(0);
     }
 }
