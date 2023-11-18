@@ -4,7 +4,7 @@ import environment.Board;
 
 public class Goal extends GameElement {
 
-    public static final int MAX_VALUE = 3;
+    public static final int MAX_VALUE = 9;
 
     private int value = 1;
     private Board board;
