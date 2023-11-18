@@ -24,6 +24,7 @@ public abstract class Snake extends Thread implements Serializable {
 
 
     public Snake(int id, Board board) {
+        setName("SNAKE-" + id);
         this.id = id;
         this.board = board;
     }
@@ -50,7 +51,6 @@ public abstract class Snake extends Thread implements Serializable {
         if (cell.isOccupiedByGoal()) {
             Goal goal = cell.removeGoal();
             goalSize = goal.captureGoal();
-            System.err.println(goalSize);
             size += goalSize;
         }
         cells.addFirst(cell);
@@ -91,7 +91,6 @@ public abstract class Snake extends Thread implements Serializable {
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
-        System.err.println("Snake " + getIdentification() + " starting at:" + getCells().getLast());
     }
 
     public Board getBoard() {

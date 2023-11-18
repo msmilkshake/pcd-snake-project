@@ -21,13 +21,10 @@ public class AutomaticSnake extends Snake {
     @Override
     public void run() {
         doInitialPositioning();
-        
-        //automatic movement
-        while (true) {
+
+        // automatic movement
+        while (!board.isFinished()) {
             try {
-                if (board.isFinished()) {
-                    break;
-                }
                 tryMove();
                 if (isTrapped) {
                     System.out.println("Snake got stuck.");
@@ -37,10 +34,12 @@ public class AutomaticSnake extends Snake {
             } catch (InterruptedException e) {
             }
         }
-        System.out.println("Snake terminated.");
+        System.out.println("Snake [" + getName() + "] terminated.");
     }
 
     private void tryMove() throws InterruptedException {
+
+        // Build a list with available positions that are not the snake itself
         List<BoardPosition> positions =
                 getBoard().getNeighboringPositions(cells.getFirst());
         List<BoardPosition> availablePos = new ArrayList<>();
@@ -50,15 +49,22 @@ public class AutomaticSnake extends Snake {
                 availablePos.add(p);
             }
         }
+
+        // If there's no available cell to move, end the snake's thread.
         if (availablePos.isEmpty()) {
             isTrapped = true;
         } else {
+
+            // Sorts the available positions in distance to goal ascending order
             availablePos.sort((o1, o2) ->
                     Double.compare(
                             o1.distanceTo(board.getGoalPosition()),
                             o2.distanceTo(board.getGoalPosition())));
             int index = 0;
             Cell target = board.getCell(availablePos.get(index++));
+
+            // If the snake got stuck in the previous movement
+            // try to choose a different cell
             if (isStuck) {
                 while (target.isOccupied() && index < availablePos.size()) {
                     target = board.getCell(availablePos.get(index++));
@@ -73,7 +79,6 @@ public class AutomaticSnake extends Snake {
                     }
                 }
             }
-            // System.out.println("[" + Thread.currentThread().getName() + "] Target:" + target.getPosition());
             move(target);
         }
 

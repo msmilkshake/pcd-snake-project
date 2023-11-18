@@ -20,7 +20,6 @@ public class ObstacleMover extends Thread {
                 move();
                 obstacle.decrementRemainingMoves();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         }
     }

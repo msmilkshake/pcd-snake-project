@@ -1,7 +1,6 @@
 package environment;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -52,7 +51,7 @@ public class BoardPosition {
     public BoardPosition getCellRight() {
         return new BoardPosition(x + 1, y);
     }
-    
+
     public BoardPosition getRandomNeighbor() {
         switch (ThreadLocalRandom.current().nextInt(4)) {
             case 0:
@@ -65,6 +64,6 @@ public class BoardPosition {
                 return getCellLeft();
         }
     }
-    
-    
+
+
 }

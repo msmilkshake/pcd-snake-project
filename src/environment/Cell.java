@@ -15,15 +15,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author luismota
  */
 public class Cell {
-    
+
     private static Lock obstacleLock = new ReentrantLock();
-    
+
     private BoardPosition position;
     private Snake ocuppyingSnake = null;
     private GameElement gameElement = null;
     private Lock lock = new ReentrantLock();
     private Condition cellNotAvailable = lock.newCondition();
-    
+
 
     public GameElement getGameElement() {
         lock.lock();
@@ -147,7 +147,7 @@ public class Cell {
             lock.unlock();
         }
     }
-    
+
     public void handleObstacleMovement(Obstacle obstacle, Board board) {
         obstacleLock.lock();
         try {

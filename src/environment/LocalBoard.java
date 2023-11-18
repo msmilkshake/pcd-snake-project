@@ -41,15 +41,14 @@ public class LocalBoard extends Board {
                 throw new RuntimeException(e);
             }
         }
-        countObstacles();
 
         setChanged();
     }
 
     @Override
     public void gameFinished() {
-        super.gameFinished();
         threadPool.shutdownNow();
+        super.gameFinished();
     }
 
 

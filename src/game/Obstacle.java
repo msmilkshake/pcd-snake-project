@@ -1,21 +1,18 @@
 package game;
 
-import environment.Board;
 import environment.Cell;
 
 public class Obstacle extends GameElement {
-	
+
 
     public static final int OBSTACLE_MOVE_INTERVAL = 1000;
-    
+
     private static final int NUM_MOVES = 3;
     private int remainingMoves = NUM_MOVES;
-    private Board board;
     private Cell occupyingCell;
 
-    public Obstacle(Board board) {
+    public Obstacle() {
         super();
-        this.board = board;
     }
 
     public int getRemainingMoves() {

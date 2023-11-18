@@ -92,7 +92,7 @@ public abstract class Board extends Observable {
         // clear obstacle list , necessary when resetting obstacles.
         getObstacles().clear();
         while (numberObstacles > 0) {
-            Obstacle obs = new Obstacle(this);
+            Obstacle obs = new Obstacle();
             obs.setOccupyingCell(addGameElement(obs));
             getObstacles().add(obs);
             numberObstacles--;
@@ -140,14 +140,15 @@ public abstract class Board extends Observable {
                 winnerSnakeSize = s.getSize();
             }
         }
-        Main.game.endGamePopup(winnerSnakeID);
+        final int value = winnerSnakeID;
+        new Thread(() -> Main.game.endGamePopup(value)).start();
     }
 
     public void countObstacles() {
         int obstacleCount = 0;
         for (Cell[] rows : cells) {
             for (Cell cell : rows) {
-                if (cell.getGameElement() instanceof  Obstacle) {
+                if (cell.getGameElement() instanceof Obstacle) {
                     ++obstacleCount;
                 }
             }

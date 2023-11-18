@@ -3,9 +3,9 @@ package game;
 import environment.Board;
 
 public class Goal extends GameElement {
-    
-    public static final int MAX_VALUE = 9;
-    
+
+    public static final int MAX_VALUE = 3;
+
     private int value = 1;
     private Board board;
 
@@ -23,7 +23,7 @@ public class Goal extends GameElement {
 
     public int captureGoal() {
         int localVal = value;
-        if (value<MAX_VALUE) {
+        if (value < MAX_VALUE) {
             incrementValue();
             board.addGameElement(this);
         }

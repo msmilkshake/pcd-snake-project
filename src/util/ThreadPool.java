@@ -31,7 +31,6 @@ public class ThreadPool {
                             task.run();
                         }
                     } catch (InterruptedException e) {
-//                        throw new RuntimeException("Worker interrupted.");
                     }
                     System.out.println("Worker stopped.");
                 }

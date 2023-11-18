@@ -53,6 +53,7 @@ public class SnakeGui implements Observer {
 
         });
         
+        // For debugging purposes
         JButton obstacleCountButton = new JButton("Obstacle Count");
         obstacleCountButton.addActionListener(new ActionListener() {
             @Override
@@ -87,6 +88,6 @@ public class SnakeGui implements Observer {
         JOptionPane.showMessageDialog(frame, 
                 "Snake " + winnerSnakeID + " won the game!",
                 "Game finished", JOptionPane.INFORMATION_MESSAGE);
-        System.exit(0);
+        // System.exit(0);
     }
 }
