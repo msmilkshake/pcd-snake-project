@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Cell {
 
-    private static Lock obstacleLock = new ReentrantLock();
+    private static Lock placementLock = new ReentrantLock();
 
     private BoardPosition position;
     private Snake ocuppyingSnake = null;
@@ -148,14 +148,24 @@ public class Cell {
         }
     }
 
-    public void handleObstacleMovement(Obstacle obstacle, Board board) {
-        obstacleLock.lock();
+    public static void handleObstacleMovement(Obstacle obstacle, Board board) {
+        placementLock.lock();
         try {
             obstacle.getOccupyingCell().removeObstacle();
             obstacle.setOccupyingCell(board.addGameElement(obstacle));
             board.setChanged();
         } finally {
-            obstacleLock.unlock();
+            placementLock.unlock();
+        }
+    }
+    
+    public static void handleGoalPlacement(Goal goal, Board board) {
+        placementLock.lock();
+        try {
+            board.addGameElement(goal);
+            board.setChanged();
+        } finally {
+            placementLock.unlock();
         }
     }
 

@@ -1,5 +1,6 @@
 package game;
 
+import environment.Cell;
 import environment.LocalBoard;
 
 public class ObstacleMover extends Thread {
@@ -25,6 +26,6 @@ public class ObstacleMover extends Thread {
     }
 
     private void move() {
-        obstacle.getOccupyingCell().handleObstacleMovement(obstacle, board);
+        Cell.handleObstacleMovement(obstacle, board);
     }
 }

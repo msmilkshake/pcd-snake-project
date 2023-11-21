@@ -1,6 +1,7 @@
 package game;
 
 import environment.Board;
+import environment.Cell;
 
 public class Goal extends GameElement {
 
@@ -25,7 +26,7 @@ public class Goal extends GameElement {
         int localVal = value;
         if (value < MAX_VALUE) {
             incrementValue();
-            board.addGameElement(this);
+            Cell.handleGoalPlacement(this, board);
         }
         return localVal;
     }
