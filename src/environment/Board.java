@@ -14,13 +14,16 @@ import java.util.Observable;
 public abstract class Board extends Observable {
     protected Cell[][] cells;
     private BoardPosition goalPosition;
-    public static final long PLAYER_PLAY_INTERVAL = 100;
+    public static final long PLAYER_PLAY_INTERVAL = 200;
     public static final long REMOTE_REFRESH_INTERVAL = 200;
     public static final int NUM_COLUMNS = 30;
     public static final int NUM_ROWS = 30;
+    public static final int GAME_START_DELAY = 10_000;
     protected LinkedList<Snake> snakes = new LinkedList<>();
     private LinkedList<Obstacle> obstacles = new LinkedList<>();
     protected boolean isFinished;
+    
+    private boolean isGameStarted = false;
 
     public Board() {
         cells = new Cell[NUM_COLUMNS][NUM_ROWS];
@@ -80,6 +83,13 @@ public abstract class Board extends Observable {
         if (pos.y < NUM_ROWS - 1)
             possibleCells.add(pos.getCellBelow());
         return possibleCells;
+    }
+    
+    public boolean isValidPosition(BoardPosition pos) {
+        return pos.x >= 0 &&
+                pos.x < NUM_COLUMNS &&
+                pos.y >= 0 &&
+                pos.y < NUM_ROWS;
     }
 
     protected Goal addGoal() {
@@ -158,5 +168,13 @@ public abstract class Board extends Observable {
             }
         }
         System.out.println("Obstacle count: " + obstacleCount);
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        isGameStarted = gameStarted;
+    }
+
+    public boolean isGameStarted() {
+        return isGameStarted;
     }
 }

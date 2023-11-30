@@ -1,6 +1,7 @@
 package gui;
 
 import environment.LocalBoard;
+import game.Server;
 
 public class Main {
     public static SnakeGui game;
@@ -9,7 +10,8 @@ public class Main {
         game = new SnakeGui(board, 500, 0);
         game.init();
         // Launch server
-        // TODO
+        Server server = new Server(board);
+        server.runServer();
 
     }
 }

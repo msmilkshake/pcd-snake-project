@@ -21,7 +21,12 @@ public class AutomaticSnake extends Snake {
     @Override
     public void run() {
         doInitialPositioning();
-
+        try {
+            sleep(Board.GAME_START_DELAY);
+            board.setGameStarted(true);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         // automatic movement
         while (!board.isFinished()) {
             try {

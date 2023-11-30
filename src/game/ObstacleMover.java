@@ -1,6 +1,6 @@
 package game;
 
-import environment.Cell;
+import environment.Board;
 import environment.LocalBoard;
 
 public class ObstacleMover extends Thread {
@@ -15,6 +15,15 @@ public class ObstacleMover extends Thread {
 
     @Override
     public void run() {
+
+        try {
+            if (!board.isGameStarted()) {
+                sleep(Board.GAME_START_DELAY);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         while (obstacle.getRemainingMoves() > 0 && !board.isFinished()) {
             try {
                 sleep(Obstacle.OBSTACLE_MOVE_INTERVAL);

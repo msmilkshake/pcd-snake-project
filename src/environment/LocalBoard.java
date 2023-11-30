@@ -1,9 +1,6 @@
 package environment;
 
-import game.AutomaticSnake;
-import game.Obstacle;
-import game.ObstacleMover;
-import game.Snake;
+import game.*;
 import util.ThreadPool;
 
 /**
@@ -34,7 +31,35 @@ public class LocalBoard extends Board {
     public void init() {
         for (Snake s : snakes)
             s.start();
-
+        // new Thread(() -> {
+        //     try {
+        //         Thread.sleep(3500);
+        //         new HumanSnake(777, this).start();
+        //         setChanged();
+        //     } catch (InterruptedException e) {
+        //         throw new RuntimeException(e);
+        //     }
+        // }).start();
+        //
+        // new Thread(() -> {
+        //     try {
+        //         Thread.sleep(6500);
+        //         new HumanSnake(777, this).start();
+        //         setChanged();
+        //     } catch (InterruptedException e) {
+        //         throw new RuntimeException(e);
+        //     }
+        // }).start();
+        // new Thread(() -> {
+        //     try {
+        //         Thread.sleep(15500);
+        //         new HumanSnake(777, this).start();
+        //         setChanged();
+        //     } catch (InterruptedException e) {
+        //         throw new RuntimeException(e);
+        //     }
+        // }).start();
+        
         // launch other threads
         for (Obstacle obstacle : getObstacles()) {
             try {

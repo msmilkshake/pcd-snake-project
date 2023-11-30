@@ -1,6 +1,7 @@
 package remote;
 
 import environment.Board;
+import environment.Cell;
 
 /**
  * Remote representation of the game, no local threads involved.
@@ -23,7 +24,12 @@ public class RemoteBoard extends Board {
 
     @Override
     public void init() {
-        // TODO 		
+        // TODO
+    }
+    
+    public void updateGame(Cell[][] cells) {
+        super.cells = cells;
+        setChanged();
     }
 
 

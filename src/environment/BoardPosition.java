@@ -1,6 +1,8 @@
 package environment;
 
 
+import game.HumanSnake;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -50,6 +52,19 @@ public class BoardPosition {
 
     public BoardPosition getCellRight() {
         return new BoardPosition(x + 1, y);
+    }
+    
+    public BoardPosition getCellByDirection(HumanSnake.Direction direction) {
+        switch (direction) {
+            case UP:
+                return getCellAbove();
+            case LEFT:
+                return getCellLeft();
+            case DOWN:
+                return getCellBelow();
+            default:
+                return getCellRight();
+        }
     }
 
     public BoardPosition getRandomNeighbor() {
