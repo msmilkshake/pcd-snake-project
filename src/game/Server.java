@@ -31,7 +31,7 @@ public class Server {
     public void runServer() {
         try {
             // 1. Create server socket
-            server = new ServerSocket(port);
+            server = new ServerSocket(port, 1);
 
             broadcaster = new Thread(new Runnable() {
                 @Override
@@ -43,7 +43,6 @@ public class Server {
                                 connection.sendGameState(cells);
                                 System.out.println("Sending state to client: " + connection.connection.getPort());
                             }
-                            System.out.println("Game state sent...");
                             Thread.sleep(Board.REMOTE_REFRESH_INTERVAL);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
@@ -69,6 +68,7 @@ public class Server {
         ConnectionHandler handler = new ConnectionHandler(connection);
         handler.start();
 
+        connections.add(handler);
         System.out.println("[new connection]" + connection.getInetAddress().getHostName());
     }
 
@@ -109,7 +109,9 @@ public class Server {
         }
 
         private void processConnection() {
+            while(true){
 
+            }
         }
 
         private void closeConnection() {
@@ -123,6 +125,7 @@ public class Server {
                 if (connection != null) {
                     connection.close();
                 }
+                connections.remove(this);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -130,7 +133,7 @@ public class Server {
 
         public void sendGameState(Cell[][] cells) {
             try {
-                out.writeObject(cells);
+                out.writeObject(board);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

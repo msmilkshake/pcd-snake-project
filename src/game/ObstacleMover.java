@@ -3,6 +3,8 @@ package game;
 import environment.Board;
 import environment.LocalBoard;
 
+import java.io.Serializable;
+
 public class ObstacleMover extends Thread {
     private Obstacle obstacle;
     private LocalBoard board;

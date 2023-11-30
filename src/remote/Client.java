@@ -23,6 +23,7 @@ import java.util.Scanner;
 public class Client {
 
     public static InetAddress address;
+
     static {
         try {
             address = InetAddress.getByName("localhost");
@@ -40,9 +41,9 @@ public class Client {
 
     private InetAddress serverName;
     private int port;
-    
+
     private RemoteBoard board;
-    
+
     public Client(InetAddress serverName, int port, RemoteBoard board) {
         this.serverName = serverName;
         this.port = port;
@@ -64,19 +65,19 @@ public class Client {
             e.printStackTrace();
         } finally {
             // 4. Close connection
-            // closeConnection();
+            closeConnection();
         }
     }
 
     private void processConnection() {
-        Thread gameStateReveicer = new Thread(new Runnable() {
+        Thread gameStateReceiver = new Thread(new Runnable() {
             @Override
             public void run() {
-                Object cells;
+                Cell[][] cells;
                 while (true) {
                     try {
-                        cells = in.readObject();
-                        // board.updateGame(cells);
+                        cells = (Cell[][])in.readObject();
+                        board.updateGame(cells);
                         System.out.println();
                     } catch (IOException | ClassNotFoundException e) {
                         throw new RuntimeException(e);
@@ -84,7 +85,10 @@ public class Client {
                 }
             }
         });
-        gameStateReveicer.start();
+        gameStateReceiver.start();
+        while(true){
+
+        }
     }
 
     private void getStreams() throws IOException {

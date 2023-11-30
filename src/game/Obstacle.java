@@ -2,6 +2,8 @@ package game;
 
 import environment.Cell;
 
+import java.io.Serializable;
+
 public class Obstacle extends GameElement {
 
 

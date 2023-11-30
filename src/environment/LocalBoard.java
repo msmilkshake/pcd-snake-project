@@ -3,12 +3,14 @@ package environment;
 import game.*;
 import util.ThreadPool;
 
+import java.io.Serializable;
+
 /**
  * Class representing the state of a game running locally
  *
  * @author luismota
  */
-public class LocalBoard extends Board {
+public class LocalBoard extends Board implements Serializable{
 
     private static final int NUM_SNAKES = 2;
     private static final int NUM_OBSTACLES = 25;

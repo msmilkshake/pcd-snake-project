@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author luismota
  */
-public class Cell implements Serializable {
+public class Cell {
 
     private static final long serialVersionUID = 1L;
     

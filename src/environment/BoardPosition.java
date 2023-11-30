@@ -3,6 +3,7 @@ package environment;
 
 import game.HumanSnake;
 
+import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
