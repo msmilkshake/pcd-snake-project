@@ -38,10 +38,15 @@ public class Server {
                 public void run() {
                     while (!board.isFinished()) {
                         try {
+                            Cell[][] cells = board.getCells();
                             for (ConnectionHandler connection : connections) {
-                                Cell[][] cells = board.getCells();
-                                connection.sendGameState(cells);
-                                System.out.println("Sending state to client: " + connection.connection.getPort());
+                                if (connection.connection.isConnected()){
+                                    connection.sendGameState(cells);
+                                    System.out.println("Sending state to client: " + connection.connection.getPort());
+                                }else{
+                                    connections.remove(connection);
+                                    connection.closeConnection();
+                                }
                             }
                             Thread.sleep(Board.REMOTE_REFRESH_INTERVAL);
                         } catch (InterruptedException e) {
@@ -109,13 +114,14 @@ public class Server {
         }
 
         private void processConnection() {
-            while(true){
+            while(connection.isConnected()){
 
             }
         }
 
         private void closeConnection() {
             try {
+                connections.remove(ConnectionHandler.this);
                 if (out != null) {
                     out.close();
                 }
@@ -125,7 +131,6 @@ public class Server {
                 if (connection != null) {
                     connection.close();
                 }
-                connections.remove(this);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -133,7 +138,7 @@ public class Server {
 
         public void sendGameState(Cell[][] cells) {
             try {
-                out.writeObject(board);
+                out.writeObject(cells);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

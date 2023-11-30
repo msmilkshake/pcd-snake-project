@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author luismota
  */
-public class LocalBoard extends Board implements Serializable{
+public class LocalBoard extends Board {
 
     private static final int NUM_SNAKES = 2;
     private static final int NUM_OBSTACLES = 25;

@@ -20,7 +20,7 @@ public abstract class Snake extends Thread implements Serializable {
     protected int size = 5;
     protected boolean isStuck = false;
     private int id;
-    private Board board;
+    private transient Board board;
 
 
     public Snake(int id, Board board) {

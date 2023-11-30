@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AutomaticSnake extends Snake {
-    private Board board;
+    private transient Board board;
     private boolean isTrapped = false;
 
     public AutomaticSnake(int id, LocalBoard board) {

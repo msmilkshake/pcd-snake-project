@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author luismota
  */
 
-public class BoardPosition {
+public class BoardPosition implements Serializable{
     public final int x;
     public final int y;
 

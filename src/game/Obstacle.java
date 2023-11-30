@@ -4,7 +4,7 @@ import environment.Cell;
 
 import java.io.Serializable;
 
-public class Obstacle extends GameElement {
+public class Obstacle extends GameElement implements Serializable{
 
 
     public static final int OBSTACLE_MOVE_INTERVAL = 1000;
