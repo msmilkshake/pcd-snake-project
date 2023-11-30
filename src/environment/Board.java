@@ -141,7 +141,10 @@ public abstract class Board extends Observable {
             }
         }
         final int value = winnerSnakeID;
-        countObstacles();
+        
+        // For debugging purposes
+        // countObstacles();
+        
         new Thread(() -> Main.game.endGamePopup(value)).start();
     }
 

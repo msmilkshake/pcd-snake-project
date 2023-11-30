@@ -26,7 +26,8 @@ public class LocalBoard extends Board {
             snakes.add(snake);
         }
         addObstacles(NUM_OBSTACLES);
-        countObstacles();
+        // For debugging purposes
+        // countObstacles();
     }
 
     public void init() {
