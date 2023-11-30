@@ -26,7 +26,8 @@ public class Goal extends GameElement {
         int localVal = value;
         if (value < MAX_VALUE) {
             incrementValue();
-            Cell.handleGoalPlacement(this, board);
+            board.getCell(board.getGoalPosition())
+                    .handleGoalPlacement(this, board);
         }
         return localVal;
     }

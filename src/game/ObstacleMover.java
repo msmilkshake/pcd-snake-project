@@ -26,6 +26,6 @@ public class ObstacleMover extends Thread {
     }
 
     private void move() {
-        Cell.handleObstacleMovement(obstacle, board);
+        obstacle.getOccupyingCell().handleObstacleMovement(obstacle, board);
     }
 }

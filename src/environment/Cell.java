@@ -15,9 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author luismota
  */
 public class Cell {
-
-    private static Lock placementLock = new ReentrantLock();
-
+    
     private BoardPosition position;
     private Snake ocuppyingSnake = null;
     private GameElement gameElement = null;
@@ -77,11 +75,15 @@ public class Cell {
         }
     }
 
-    public void setGameElement(GameElement element) {
+    public boolean setGameElement(GameElement element) {
         // coordination and mutual exclusion
         lock.lock();
         try {
+            if (isOccupied()) {
+                return false;
+            }
             gameElement = element;
+            return true;
         } finally {
             lock.unlock();
         }
@@ -148,24 +150,24 @@ public class Cell {
         }
     }
 
-    public static void handleObstacleMovement(Obstacle obstacle, Board board) {
-        placementLock.lock();
+    public void handleObstacleMovement(Obstacle obstacle, Board board) {
+        lock.lock();
         try {
             obstacle.getOccupyingCell().removeObstacle();
             obstacle.setOccupyingCell(board.addGameElement(obstacle));
             board.setChanged();
         } finally {
-            placementLock.unlock();
+            lock.unlock();
         }
     }
     
-    public static void handleGoalPlacement(Goal goal, Board board) {
-        placementLock.lock();
+    public void handleGoalPlacement(Goal goal, Board board) {
+        lock.lock();
         try {
             board.addGameElement(goal);
             board.setChanged();
         } finally {
-            placementLock.unlock();
+            lock.unlock();
         }
     }
 

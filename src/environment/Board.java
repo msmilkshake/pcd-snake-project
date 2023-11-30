@@ -56,12 +56,12 @@ public abstract class Board extends Observable {
         BoardPosition pos = getRandomPosition();
         while (!placed) {
             if (!getCell(pos).isOccupied() && !getCell(pos).isOccupiedByGoal()) {
-                getCell(pos).setGameElement(gameElement);
-                if (gameElement instanceof Goal) {
+                placed = getCell(pos).setGameElement(gameElement);
+                if (gameElement instanceof Goal && placed) {
                     setGoalPosition(pos);
                 }
-                placed = true;
-            } else {
+            }
+            if (!placed) {
                 pos = getRandomPosition();
             }
         }
@@ -141,6 +141,7 @@ public abstract class Board extends Observable {
             }
         }
         final int value = winnerSnakeID;
+        countObstacles();
         new Thread(() -> Main.game.endGamePopup(value)).start();
     }
 
