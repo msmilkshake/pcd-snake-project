@@ -1,7 +1,7 @@
 package game;
 
 import environment.Board;
-import environment.Cell;
+import environment.BoardState;
 import environment.LocalBoard;
 
 import java.io.IOException;
@@ -10,15 +10,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class Server {
+public class Server extends Thread {
 
     public static int port = 54321;
 
 
     private ServerSocket server;
+    private List<ConnectionHandler> newConnections = new ArrayList<>();
     private List<ConnectionHandler> connections = new ArrayList<>();
+    private List<ConnectionHandler> deadConnections = new ArrayList<>();
 
     private LocalBoard board;
     private Thread broadcaster;
@@ -27,6 +30,10 @@ public class Server {
         this.board = board;
     }
 
+    @Override
+    public void run() {
+        runServer();
+    }
 
     public void runServer() {
         try {
@@ -36,23 +43,28 @@ public class Server {
             broadcaster = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while (!board.isFinished()) {
+                    do {
                         try {
-                            Cell[][] cells = board.getCells();
+                            BoardState state = new BoardState(board.getCells(), board.getSnakes());
+                            connections.addAll(newConnections);
+                            newConnections.clear();
                             for (ConnectionHandler connection : connections) {
-                                if (connection.connection.isConnected()){
-                                    connection.sendGameState(cells);
-                                    System.out.println("Sending state to client: " + connection.connection.getPort());
-                                }else{
-                                    connections.remove(connection);
-                                    connection.closeConnection();
+                                if (!connection.connection.isClosed()) {
+                                    
+                                    connection.sendGameState(state);
+                                    System.out.println("Sending state to client: " +
+                                            connection.connection.getPort());
                                 }
                             }
+                            connections.removeAll(deadConnections);
+                            deadConnections.clear();
+
                             Thread.sleep(Board.REMOTE_REFRESH_INTERVAL);
+
                         } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                            System.out.println("Broadcaster interrupted.");;
                         }
-                    }
+                    } while (!board.isFinished());
                 }
             });
             broadcaster.start();
@@ -73,7 +85,7 @@ public class Server {
         ConnectionHandler handler = new ConnectionHandler(connection);
         handler.start();
 
-        connections.add(handler);
+        newConnections.add(handler);
         System.out.println("[new connection]" + connection.getInetAddress().getHostName());
     }
 
@@ -114,14 +126,19 @@ public class Server {
         }
 
         private void processConnection() {
-            while(connection.isConnected()){
-
+            try {
+                while (!connection.isClosed()) {
+                    String action = in.nextLine();
+                    System.out.println(action);
+                }
+            } catch (NoSuchElementException e) {
+                System.out.println("Client has closed the connection");
             }
         }
 
         private void closeConnection() {
             try {
-                connections.remove(ConnectionHandler.this);
+                deadConnections.add(ConnectionHandler.this);
                 if (out != null) {
                     out.close();
                 }
@@ -132,15 +149,17 @@ public class Server {
                     connection.close();
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println(" IOException in closeConnection");
+                e.printStackTrace();
             }
         }
 
-        public void sendGameState(Cell[][] cells) {
+        public void sendGameState(BoardState state) {
             try {
-                out.writeObject(cells);
+                out.writeObject(state);
+                out.reset();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println("The out channel was closed");
             }
         }
     }

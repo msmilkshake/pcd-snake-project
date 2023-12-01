@@ -1,7 +1,12 @@
 package remote;
 
 import environment.Board;
+import environment.BoardState;
 import environment.Cell;
+import game.Snake;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Remote representation of the game, no local threads involved.
@@ -27,8 +32,9 @@ public class RemoteBoard extends Board {
         // TODO
     }
     
-    public void updateGame(Cell[][] cells) {
-        super.cells = cells;
+    public void updateGame(BoardState state) {
+        super.cells = state.getCells();
+        super.snakes = state.getSnakes();
         setChanged();
     }
 

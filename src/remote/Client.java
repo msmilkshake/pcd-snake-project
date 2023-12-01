@@ -1,8 +1,7 @@
 package remote;
 
 
-import environment.Cell;
-import environment.LocalBoard;
+import environment.BoardState;
 import game.Server;
 import gui.SnakeGui;
 
@@ -12,7 +11,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 /**
  * Remore client, only for part II
@@ -27,8 +25,7 @@ public class Client {
     static {
         try {
             address = InetAddress.getByName("localhost");
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
+        } catch (UnknownHostException ignored) {
         }
     }
 
@@ -61,7 +58,8 @@ public class Client {
             // 3. Process connection
             processConnection();
 
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
+            System.out.println("[Client] IO / Interrupted Exception");
             e.printStackTrace();
         } finally {
             // 4. Close connection
@@ -69,26 +67,26 @@ public class Client {
         }
     }
 
-    private void processConnection() {
+    private void processConnection() throws InterruptedException {
         Thread gameStateReceiver = new Thread(new Runnable() {
             @Override
             public void run() {
-                Cell[][] cells;
+                BoardState state;
                 while (true) {
                     try {
-                        cells = (Cell[][])in.readObject();
-                        board.updateGame(cells);
+                        state = (BoardState) in.readObject();
+                        System.out.println("[Client] - Received Game State:");
+                        System.out.println(state);
+                        board.updateGame(state);
                         System.out.println();
                     } catch (IOException | ClassNotFoundException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                 }
             }
         });
         gameStateReceiver.start();
-        while(true){
-
-        }
+        gameStateReceiver.join();
     }
 
     private void getStreams() throws IOException {
@@ -110,7 +108,7 @@ public class Client {
                 connection.close();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
