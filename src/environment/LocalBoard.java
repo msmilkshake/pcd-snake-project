@@ -33,20 +33,13 @@ public class LocalBoard extends Board {
     public void init() {
         for (Snake s : snakes)
             s.start();
+        
         // new Thread(() -> {
         //     try {
-        //         Thread.sleep(3500);
-        //         new HumanSnake(777, this).start();
-        //         setChanged();
-        //     } catch (InterruptedException e) {
-        //         throw new RuntimeException(e);
-        //     }
-        // }).start();
-        //
-        // new Thread(() -> {
-        //     try {
-        //         Thread.sleep(6500);
-        //         new HumanSnake(777, this).start();
+        //         Thread.sleep(5_000);
+        //         Snake s = new HumanSnake(777, this);
+        //         snakes.add(s);
+        //         s.start();
         //         setChanged();
         //     } catch (InterruptedException e) {
         //         throw new RuntimeException(e);
@@ -54,8 +47,10 @@ public class LocalBoard extends Board {
         // }).start();
         // new Thread(() -> {
         //     try {
-        //         Thread.sleep(15500);
-        //         new HumanSnake(777, this).start();
+        //         Thread.sleep(15_000);
+        //         Snake s = new HumanSnake(777, this);
+        //         snakes.add(s);
+        //         s.start();
         //         setChanged();
         //     } catch (InterruptedException e) {
         //         throw new RuntimeException(e);

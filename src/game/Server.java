@@ -2,6 +2,7 @@ package game;
 
 import environment.Board;
 import environment.BoardState;
+import environment.Cell;
 import environment.LocalBoard;
 
 import java.io.IOException;
@@ -38,24 +39,18 @@ public class Server extends Thread {
     public void runServer() {
         try {
             // 1. Create server socket
-            server = new ServerSocket(port, 1);
+            server = new ServerSocket(port);
 
             broadcaster = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     do {
                         try {
-                            BoardState state = new BoardState(board.getCells(), board.getSnakes());
                             connections.addAll(newConnections);
                             newConnections.clear();
-                            for (ConnectionHandler connection : connections) {
-                                if (!connection.connection.isClosed()) {
-                                    
-                                    connection.sendGameState(state);
-                                    System.out.println("Sending state to client: " +
-                                            connection.connection.getPort());
-                                }
-                            }
+                            
+                            sendState();
+                            
                             connections.removeAll(deadConnections);
                             deadConnections.clear();
 
@@ -65,7 +60,23 @@ public class Server extends Thread {
                             System.out.println("Broadcaster interrupted.");;
                         }
                     } while (!board.isFinished());
+                    
+                    // Send state one last time to update the clients with the last state
+                    sendState();
                 }
+
+                private void sendState() {
+                    BoardState state = new BoardState(board.getCells(), board.getSnakes());
+                    for (ConnectionHandler connection : connections) {
+                        if (!connection.connection.isClosed()) {
+
+                            connection.sendGameState(state);
+                            System.out.println("Sending state to client: " +
+                                    connection.connection.getPort());
+                        }
+                    }
+                }
+                
             });
             broadcaster.start();
 
@@ -77,6 +88,7 @@ public class Server extends Thread {
             e.printStackTrace();
         }
     }
+    
 
     private void waitForConnection() throws IOException {
         System.out.println("[waiting for connection...]");
@@ -95,9 +107,15 @@ public class Server extends Thread {
 
         private ObjectOutputStream out;
         private Scanner in;
+        
+        private HumanSnake snake;
 
         public ConnectionHandler(Socket connection) {
             this.connection = connection;
+            snake = new HumanSnake(connection.getPort(), board);
+            board.getSnakes().add(snake);
+            board.setChanged();
+            snake.start();
         }
 
         @Override
@@ -128,12 +146,43 @@ public class Server extends Thread {
         private void processConnection() {
             try {
                 while (!connection.isClosed()) {
+                    System.out.println("[Client: " + connection.getPort() + "]: Waiting for action...");
                     String action = in.nextLine();
-                    System.out.println(action);
+                    System.out.println("[Client: " + connection.getPort() + "]: Got action: " + action);
+                    switch (action) {
+                        case ("UP"):
+                            snake.setDirection(HumanSnake.Direction.UP);
+                            snake.setMoving(true);
+                            break;
+                        case ("RIGHT"):
+                            snake.setDirection(HumanSnake.Direction.RIGHT);
+                            snake.setMoving(true);
+                            break;
+                        case ("DOWN"):
+                            snake.setDirection(HumanSnake.Direction.DOWN);
+                            snake.setMoving(true);
+                            break;
+                        case ("LEFT"):
+                            snake.setDirection(HumanSnake.Direction.LEFT);
+                            snake.setMoving(true);
+                            break;
+                        case ("STOP"):
+                            snake.setMoving(false);
+                            break;
+                    }
                 }
             } catch (NoSuchElementException e) {
                 System.out.println("Client has closed the connection");
             }
+            handleClose();
+        }
+
+        private void handleClose() {
+            for (Cell cell : snake.getCells()) {
+                cell.release();
+            }
+            board.getSnakes().remove(snake);
+            board.setChanged();
         }
 
         private void closeConnection() {
@@ -156,8 +205,11 @@ public class Server extends Thread {
 
         public void sendGameState(BoardState state) {
             try {
-                out.writeObject(state);
-                out.reset();
+                if (out != null) {
+                    out.reset();
+                    out.writeObject(state);
+                    out.flush();
+                }
             } catch (IOException e) {
                 System.out.println("The out channel was closed");
             }

@@ -18,6 +18,7 @@ public class HumanSnake extends Snake {
     }
     
     private Direction direction = Direction.RIGHT;
+    private boolean isMoving = false;
 
     public HumanSnake(int id, Board board) {
         super(id, board);
@@ -41,7 +42,9 @@ public class HumanSnake extends Snake {
                         .getPosition()
                         .getCellByDirection(direction);
                 
-                if (getBoard().isValidPosition(nextPos)) {
+                if (getBoard().isValidPosition(nextPos) &&
+                        isMoving &&
+                        !getBoard().getCell(nextPos).isOccupied()) {
                     move(getBoard().getCell(nextPos));
                 }
                 
@@ -54,5 +57,9 @@ public class HumanSnake extends Snake {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public void setMoving(boolean moving) {
+        isMoving = moving;
     }
 }

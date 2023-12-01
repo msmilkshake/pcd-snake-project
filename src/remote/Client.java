@@ -7,6 +7,7 @@ import gui.SnakeGui;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.OptionalDataException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -68,13 +69,17 @@ public class Client {
     }
 
     private void processConnection() throws InterruptedException {
+        
+        board.registerClientOutput(out);
+        
         Thread gameStateReceiver = new Thread(new Runnable() {
             @Override
             public void run() {
                 BoardState state;
                 while (true) {
                     try {
-                        state = (BoardState) in.readObject();
+                        Object readObj = in.readObject();
+                        state = (BoardState) readObj;
                         System.out.println("[Client] - Received Game State:");
                         System.out.println(state);
                         board.updateGame(state);
@@ -95,6 +100,8 @@ public class Client {
 
         // Input - Read
         in = new ObjectInputStream(connection.getInputStream());
+        
+        // Discards half received data at the stream start.
         if (in.available() > 0) {
             in.readAllBytes();
         }

@@ -1,12 +1,8 @@
 package environment;
 
-import game.GameElement;
-import game.Goal;
-import game.Obstacle;
-import game.Snake;
+import game.*;
 import gui.Main;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +19,7 @@ public abstract class Board extends Observable {
     protected LinkedList<Snake> snakes = new LinkedList<>();
     private LinkedList<Obstacle> obstacles = new LinkedList<>();
     protected boolean isFinished;
-    
+
     private boolean isGameStarted = false;
 
     public Board() {
@@ -85,7 +81,7 @@ public abstract class Board extends Observable {
             possibleCells.add(pos.getCellBelow());
         return possibleCells;
     }
-    
+
     public boolean isValidPosition(BoardPosition pos) {
         return pos.x >= 0 &&
                 pos.x < NUM_COLUMNS &&
@@ -132,7 +128,9 @@ public abstract class Board extends Observable {
 
     public void interruptSnakes() {
         for (Snake s : snakes) {
-            s.interrupt();
+            if (s instanceof AutomaticSnake) {
+                s.interrupt();
+            }
         }
     }
 
@@ -152,10 +150,10 @@ public abstract class Board extends Observable {
             }
         }
         final int value = winnerSnakeID;
-        
+
         // For debugging purposes
         // countObstacles();
-        
+
         new Thread(() -> Main.game.endGamePopup(value)).start();
     }
 
