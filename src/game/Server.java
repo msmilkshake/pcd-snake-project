@@ -118,11 +118,11 @@ public class Server extends Thread {
         }
 
         private void getStreams() throws IOException {
-            // Output - Write
-            out = new ObjectOutputStream(connection.getOutputStream());
-
             // Input - Read
             in = new Scanner(connection.getInputStream());
+
+            // Output - Write
+            out = new ObjectOutputStream(connection.getOutputStream());
         }
 
         private void processConnection() {

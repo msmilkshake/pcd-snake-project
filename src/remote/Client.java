@@ -90,10 +90,14 @@ public class Client {
     }
 
     private void getStreams() throws IOException {
+        // Output - Write
         out = new PrintWriter(connection.getOutputStream(), true);
 
         // Input - Read
         in = new ObjectInputStream(connection.getInputStream());
+        if (in.available() > 0) {
+            in.readAllBytes();
+        }
     }
 
     private void closeConnection() {
