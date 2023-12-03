@@ -48,19 +48,19 @@ public class Server extends Thread {
                         try {
                             connections.addAll(newConnections);
                             newConnections.clear();
-                            
-                            sendState();
-                            
+
                             connections.removeAll(deadConnections);
                             deadConnections.clear();
+
+                            sendState();
 
                             Thread.sleep(Board.REMOTE_REFRESH_INTERVAL);
 
                         } catch (InterruptedException e) {
-                            System.out.println("Broadcaster interrupted.");;
+                            System.out.println("Broadcaster interrupted.");
                         }
                     } while (!board.isFinished());
-                    
+
                     // Send state one last time to update the clients with the last state
                     sendState();
                 }
@@ -76,7 +76,7 @@ public class Server extends Thread {
                         }
                     }
                 }
-                
+
             });
             broadcaster.start();
 
@@ -88,7 +88,7 @@ public class Server extends Thread {
             e.printStackTrace();
         }
     }
-    
+
 
     private void waitForConnection() throws IOException {
         System.out.println("[waiting for connection...]");
@@ -107,7 +107,7 @@ public class Server extends Thread {
 
         private ObjectOutputStream out;
         private Scanner in;
-        
+
         private HumanSnake snake;
 
         public ConnectionHandler(Socket connection) {
