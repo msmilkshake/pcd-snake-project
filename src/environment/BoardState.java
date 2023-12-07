@@ -9,9 +9,13 @@ public class BoardState implements Serializable {
     private Cell[][] cells;
     private LinkedList<Snake> snakes;
     
-    public BoardState(Cell[][] cells, LinkedList<Snake> snakes) {
-        this.cells = cells;
-        this.snakes = snakes;
+    public BoardState(LocalBoard board) {
+        createClone(board);
+    }
+
+    private void createClone(LocalBoard board) {
+        this.cells = board.getCells().clone();
+        this.snakes = (LinkedList<Snake>) board.getSnakes().clone();
     }
 
     public Cell[][] getCells() {

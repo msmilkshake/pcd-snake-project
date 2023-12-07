@@ -66,7 +66,9 @@ public class SnakeGui implements Observer {
         buttonsPanel.add(resetObstaclesButton);
         buttonsPanel.add(obstacleCountButton);
         
-        frame.add(buttonsPanel, BorderLayout.SOUTH);
+        if (board instanceof LocalBoard) {
+            frame.add(buttonsPanel, BorderLayout.SOUTH);
+        }
 
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

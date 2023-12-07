@@ -20,9 +20,10 @@ public class Server extends Thread {
 
 
     private ServerSocket server;
-    private List<ConnectionHandler> newConnections = new ArrayList<>();
-    private List<ConnectionHandler> connections = new ArrayList<>();
-    private List<ConnectionHandler> deadConnections = new ArrayList<>();
+    
+    private final List<ConnectionHandler> newConnections = new ArrayList<>();
+    private final List<ConnectionHandler> connections = new ArrayList<>();
+    private final List<ConnectionHandler> deadConnections = new ArrayList<>();
 
     private LocalBoard board;
     private Thread broadcaster;
@@ -46,33 +47,38 @@ public class Server extends Thread {
                 public void run() {
                     do {
                         try {
-                            connections.addAll(newConnections);
-                            newConnections.clear();
-                            
-                            sendState();
-                            
-                            connections.removeAll(deadConnections);
-                            deadConnections.clear();
+                            synchronized (connections) {
+                                connections.addAll(newConnections);
+                                newConnections.clear();
+                                connections.removeAll(deadConnections);
+                                deadConnections.clear();
 
+                                BoardState state = new BoardState(board);
+                                sendState(state);
+                            }
                             Thread.sleep(Board.REMOTE_REFRESH_INTERVAL);
 
                         } catch (InterruptedException e) {
+                            e.printStackTrace();
                             System.out.println("Broadcaster interrupted.");;
                         }
                     } while (!board.isFinished());
                     
                     // Send state one last time to update the clients with the last state
-                    sendState();
+                    BoardState state = new BoardState(board);
+                    sendState(state);
                 }
 
-                private void sendState() {
-                    BoardState state = new BoardState(board.getCells(), board.getSnakes());
+                private void sendState(BoardState state) {
                     for (ConnectionHandler connection : connections) {
                         if (!connection.connection.isClosed()) {
-
-                            connection.sendGameState(state);
-                            System.out.println("Sending state to client: " +
-                                    connection.connection.getPort());
+                            try {
+                                connection.sendGameState(state);
+                                System.out.println("Sending state to client: " +
+                                        connection.connection.getPort());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -97,7 +103,9 @@ public class Server extends Thread {
         ConnectionHandler handler = new ConnectionHandler(connection);
         handler.start();
 
-        newConnections.add(handler);
+        synchronized (connections) {
+            newConnections.add(handler);
+        }
         System.out.println("[new connection]" + connection.getInetAddress().getHostName());
     }
 
@@ -172,6 +180,7 @@ public class Server extends Thread {
                     }
                 }
             } catch (NoSuchElementException e) {
+                e.printStackTrace();
                 System.out.println("Client has closed the connection");
             }
             handleClose();
@@ -187,7 +196,9 @@ public class Server extends Thread {
 
         private void closeConnection() {
             try {
-                deadConnections.add(ConnectionHandler.this);
+                synchronized (connections) {
+                    deadConnections.add(ConnectionHandler.this);
+                }
                 if (out != null) {
                     out.close();
                 }
@@ -211,6 +222,7 @@ public class Server extends Thread {
                     out.flush();
                 }
             } catch (IOException e) {
+                e.printStackTrace();
                 System.out.println("The out channel was closed");
             }
         }

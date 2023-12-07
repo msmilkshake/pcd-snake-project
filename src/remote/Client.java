@@ -86,6 +86,12 @@ public class Client {
                         System.out.println();
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
+                        try {
+                            connection.close();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        break;
                     }
                 }
             }
