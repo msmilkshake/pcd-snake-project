@@ -1,9 +1,6 @@
 package environment;
 
-import game.GameElement;
-import game.Goal;
-import game.Obstacle;
-import game.Snake;
+import game.*;
 import gui.Main;
 
 import java.util.ArrayList;
@@ -14,13 +11,16 @@ import java.util.Observable;
 public abstract class Board extends Observable {
     protected Cell[][] cells;
     private BoardPosition goalPosition;
-    public static final long PLAYER_PLAY_INTERVAL = 100;
+    public static final long PLAYER_PLAY_INTERVAL = 200;
     public static final long REMOTE_REFRESH_INTERVAL = 200;
     public static final int NUM_COLUMNS = 30;
     public static final int NUM_ROWS = 30;
+    public static final int GAME_START_DELAY = 10_000;
     protected LinkedList<Snake> snakes = new LinkedList<>();
     private LinkedList<Obstacle> obstacles = new LinkedList<>();
     protected boolean isFinished;
+
+    private boolean isGameStarted = false;
 
     public Board() {
         cells = new Cell[NUM_COLUMNS][NUM_ROWS];
@@ -82,6 +82,13 @@ public abstract class Board extends Observable {
         return possibleCells;
     }
 
+    public boolean isValidPosition(BoardPosition pos) {
+        return pos.x >= 0 &&
+                pos.x < NUM_COLUMNS &&
+                pos.y >= 0 &&
+                pos.y < NUM_ROWS;
+    }
+
     protected Goal addGoal() {
         Goal goal = new Goal(this);
         addGameElement(goal);
@@ -121,7 +128,9 @@ public abstract class Board extends Observable {
 
     public void interruptSnakes() {
         for (Snake s : snakes) {
-            s.interrupt();
+            if (s instanceof AutomaticSnake) {
+                s.interrupt();
+            }
         }
     }
 
@@ -141,10 +150,10 @@ public abstract class Board extends Observable {
             }
         }
         final int value = winnerSnakeID;
-        
+
         // For debugging purposes
         // countObstacles();
-        
+
         new Thread(() -> Main.game.endGamePopup(value)).start();
     }
 
@@ -158,5 +167,13 @@ public abstract class Board extends Observable {
             }
         }
         System.out.println("Obstacle count: " + obstacleCount);
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        isGameStarted = gameStarted;
+    }
+
+    public boolean isGameStarted() {
+        return isGameStarted;
     }
 }

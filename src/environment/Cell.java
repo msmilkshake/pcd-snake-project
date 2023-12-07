@@ -5,6 +5,7 @@ import game.Goal;
 import game.Obstacle;
 import game.Snake;
 
+import java.io.Serializable;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -14,7 +15,9 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author luismota
  */
-public class Cell {
+public class Cell implements Serializable{
+
+    private static final long serialVersionUID = 1L;
     
     private BoardPosition position;
     private Snake ocuppyingSnake = null;

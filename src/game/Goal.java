@@ -3,12 +3,14 @@ package game;
 import environment.Board;
 import environment.Cell;
 
-public class Goal extends GameElement {
+import java.io.Serializable;
+
+public class Goal extends GameElement implements Serializable {
 
     public static final int MAX_VALUE = 9;
 
     private int value = 1;
-    private Board board;
+    private transient Board board;
 
     public Goal(Board board) {
         this.board = board;

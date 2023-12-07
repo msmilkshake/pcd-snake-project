@@ -2,7 +2,9 @@ package game;
 
 import environment.Cell;
 
-public class Obstacle extends GameElement {
+import java.io.Serializable;
+
+public class Obstacle extends GameElement implements Serializable{
 
 
     public static final int OBSTACLE_MOVE_INTERVAL = 1000;

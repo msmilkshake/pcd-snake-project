@@ -1,6 +1,9 @@
 package environment;
 
 
+import game.HumanSnake;
+
+import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -9,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author luismota
  */
 
-public class BoardPosition {
+public class BoardPosition implements Serializable{
     public final int x;
     public final int y;
 
@@ -50,6 +53,19 @@ public class BoardPosition {
 
     public BoardPosition getCellRight() {
         return new BoardPosition(x + 1, y);
+    }
+    
+    public BoardPosition getCellByDirection(HumanSnake.Direction direction) {
+        switch (direction) {
+            case UP:
+                return getCellAbove();
+            case LEFT:
+                return getCellLeft();
+            case DOWN:
+                return getCellBelow();
+            default:
+                return getCellRight();
+        }
     }
 
     public BoardPosition getRandomNeighbor() {

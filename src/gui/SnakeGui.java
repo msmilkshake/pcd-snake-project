@@ -20,8 +20,8 @@ import java.util.Observer;
  * @author luismota
  */
 public class SnakeGui implements Observer {
-    public static final int BOARD_WIDTH = 700;
-    public static final int BOARD_HEIGHT = 700;
+    public static final int BOARD_WIDTH = 400;
+    public static final int BOARD_HEIGHT = 400;
     public static final int NUM_COLUMNS = 40;
     public static final int NUM_ROWS = 30;
     private JFrame frame;
@@ -66,7 +66,9 @@ public class SnakeGui implements Observer {
         buttonsPanel.add(resetObstaclesButton);
         buttonsPanel.add(obstacleCountButton);
         
-        frame.add(buttonsPanel, BorderLayout.SOUTH);
+        if (board instanceof LocalBoard) {
+            frame.add(buttonsPanel, BorderLayout.SOUTH);
+        }
 
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
